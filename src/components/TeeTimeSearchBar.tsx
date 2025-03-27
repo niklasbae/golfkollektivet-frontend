@@ -47,13 +47,15 @@ const TeeTimeSearchBar: React.FC<Props> = ({ onSearch }) => {
 
       <input
         type="date"
-        value={date}
+        value={date || ""}
         onChange={(e) => setDate(e.target.value)}
+        placeholder="Dato"
         style={{
           padding: '0.75rem 1rem',
           borderRadius: '9999px',
           border: '1px solid #ccc',
-          fontSize: '1rem'
+          fontSize: '1rem',
+          minWidth: '140px'
         }}
       />
 

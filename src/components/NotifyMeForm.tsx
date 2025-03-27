@@ -46,24 +46,41 @@ const NotifyMeForm = () => {
 
         <input
           type="date"
-          value={date}
+          value={date || ""}
           onChange={(e) => setDate(e.target.value)}
-          style={{ padding: '0.75rem 1rem', borderRadius: '9999px', border: '1px solid #ccc' }}
+          placeholder="Dato"
+          style={{
+            padding: '0.75rem 1rem',
+            borderRadius: '9999px',
+            border: '1px solid #ccc',
+            minWidth: '140px'  // prevent shrinking into a circle
+          }}
         />
 
         <input
           type="time"
-          value={from}
+          value={from || ""}
           onChange={(e) => setFrom(e.target.value)}
           placeholder="Fra"
-          style={{ padding: '0.75rem 1rem', borderRadius: '9999px', border: '1px solid #ccc' }}
+          style={{
+            padding: '0.75rem 1rem',
+            borderRadius: '9999px',
+            border: '1px solid #ccc',
+            minWidth: '100px'
+          }}
         />
+
         <input
           type="time"
-          value={to}
+          value={to || ""}
           onChange={(e) => setTo(e.target.value)}
           placeholder="Til"
-          style={{ padding: '0.75rem 1rem', borderRadius: '9999px', border: '1px solid #ccc' }}
+          style={{
+            padding: '0.75rem 1rem',
+            borderRadius: '9999px',
+            border: '1px solid #ccc',
+            minWidth: '100px'
+          }}
         />
         <button
           onClick={handleSubscribe}
