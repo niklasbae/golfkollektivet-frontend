@@ -2,11 +2,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './../components/Navbar';
 import Footer from './../components/Footer';
 import Home from './../pages/Home';
-import TeeTimes from './../pages/TeeTimes';
-import Events from './../pages/Events';
-import Merch from './../pages/Merch';
-import About from './../pages/About';
-import Login from './../pages/Login';
 
 const AppRoutes = () => {
   return (
@@ -15,11 +10,6 @@ const AppRoutes = () => {
       <main style={{ paddingTop: '4rem' }}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/starttider" element={<TeeTimes />} />
-          <Route path="/arrangementer" element={<Events />} />
-          <Route path="/merch" element={<Merch />} />
-          <Route path="/om-oss" element={<About />} />
-          <Route path="/logg-inn" element={<Login />} />
         </Routes>
       </main>
       <Footer />
