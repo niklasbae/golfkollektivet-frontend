@@ -1,8 +1,9 @@
 // src/components/NotifyMeForm.tsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const NotifyMeForm = () => {
-  const [email, setEmail] = useState('');
+  // 
+  // const [email, setEmail] = useState('');
   const [date, setDate] = useState('');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
