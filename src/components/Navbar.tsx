@@ -1,11 +1,18 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+// src/components/Navbar.tsx
+import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import '../styles/global.css';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
+
+  // Automatically close the menu on route change
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
 
   return (
     <header className="navbar">
