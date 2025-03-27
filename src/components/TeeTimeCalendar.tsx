@@ -1,4 +1,3 @@
-import React from 'react';
 import '../styles/global.css'; // optional, already loaded globally
 
 // Dummy data structure for now
