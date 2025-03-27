@@ -131,7 +131,7 @@ button {
 input::placeholder,
 textarea::placeholder {
   color: #666;
-  opacity: 1; /* make sure it's visible even in Safari */
+  opacity: 1;
 }
 
 input[type="date"]::placeholder,
@@ -151,4 +151,17 @@ textarea {
 
 select:invalid {
   color: #666;
+}
+
+/* --- Mobile stacking for forms --- */
+@media (max-width: 767px) {
+  .form-stack {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .form-stack > * {
+    flex: 1 1 auto !important;
+    min-width: 100% !important;
+  }
 }

@@ -19,18 +19,21 @@ const TeeTimeSearchBar: React.FC<Props> = ({ onSearch }) => {
   }, [date, query, spots]);
 
   return (
-    <div style={{
-      display: 'flex',
-      flexWrap: 'wrap',
-      gap: '1rem',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '1.5rem',
-      borderRadius: '1rem',
-      backgroundColor: '#fff',
-      boxShadow: '0 0 10px rgba(0,0,0,0.05)',
-      marginBottom: '1rem',
-    }}>
+    <div
+      className="form-stack"
+      style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '1rem',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '1.5rem',
+        borderRadius: '1rem',
+        backgroundColor: '#fff',
+        boxShadow: '0 0 10px rgba(0,0,0,0.05)',
+        marginBottom: '1rem',
+      }}
+    >
       {/* Spots dropdown moved first */}
       <select
         value={spots}

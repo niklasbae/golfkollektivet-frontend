@@ -31,6 +31,7 @@ const Navbar = () => {
 
         <nav className={`nav-links ${menuOpen ? 'open' : ''}`}>
           <span onClick={() => handleNavClick('/starttider')}>Starttider</span>
+          <span onClick={() => handleNavClick('/varsling')}>Få varsel</span>
           <span onClick={() => handleNavClick('/arrangementer')}>Arrangementer</span>
           <span onClick={() => handleNavClick('/merch')}>Merch</span>
           <span onClick={() => handleNavClick('/om-oss')}>Om oss</span>

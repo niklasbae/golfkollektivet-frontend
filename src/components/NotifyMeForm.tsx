@@ -22,17 +22,19 @@ const NotifyMeForm = () => {
 
   return (
     <div style={{ marginBottom: '2.5rem' }}>
-      <h3 style={{ margin: '1rem 0 0.75rem', fontSize: '1.2rem' }}>Få varsel når en tid åpner seg</h3>
-      <div style={{
-        background: '#fff',
-        borderRadius: '1rem',
-        padding: '1rem 1.5rem',
-        boxShadow: '0 0 10px rgba(0,0,0,0.05)',
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '1rem',
-        alignItems: 'center'
-      }}>
+      <div
+        className="form-stack"
+        style={{
+          background: '#fff',
+          borderRadius: '1rem',
+          padding: '1rem 1.5rem',
+          boxShadow: '0 0 10px rgba(0,0,0,0.05)',
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '1rem',
+          alignItems: 'center',
+        }}
+      >
         <select
           value={availableSpots}
           onChange={(e) => setAvailableSpots(e.target.value)}
