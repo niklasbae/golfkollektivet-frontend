@@ -125,3 +125,30 @@ button {
   border-radius: 6px;
   gap: 0.5rem;
 }
+
+/* --- Force input appearance in Safari + fix blank fields --- */
+
+input::placeholder,
+textarea::placeholder {
+  color: #666;
+  opacity: 1; /* make sure it's visible even in Safari */
+}
+
+input[type="date"]::placeholder,
+input[type="time"]::placeholder {
+  color: #666;
+}
+
+input,
+select,
+textarea {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #fff !important;
+  color: #000 !important;
+  border: 1px solid #ccc;
+}
+
+select:invalid {
+  color: #666;
+}

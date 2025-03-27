@@ -1,15 +1,23 @@
 // src/components/Navbar.tsx
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/global.css';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
-  // Automatically close the menu on route change
+  const handleNavClick = (path: string) => {
+    setMenuOpen(false); // Always close the menu
+    if (location.pathname !== path) {
+      navigate(path); // Navigate if not already there
+    }
+  };
+
+  // Optional: auto-close on browser back/forward
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
@@ -17,14 +25,16 @@ const Navbar = () => {
   return (
     <header className="navbar">
       <div className="navbar-container">
-        <Link to="/" className="logo">Golfkollektivet</Link>
+        <div onClick={() => handleNavClick('/')} className="logo" style={{ cursor: 'pointer' }}>
+          Golfkollektivet
+        </div>
 
         <nav className={`nav-links ${menuOpen ? 'open' : ''}`}>
-          <Link to="/starttider">Starttider</Link>
-          <Link to="/arrangementer">Arrangementer</Link>
-          <Link to="/merch">Merch</Link>
-          <Link to="/om-oss">Om oss</Link>
-          <Link to="/logg-inn">Logg inn</Link>
+          <span onClick={() => handleNavClick('/starttider')}>Starttider</span>
+          <span onClick={() => handleNavClick('/arrangementer')}>Arrangementer</span>
+          <span onClick={() => handleNavClick('/merch')}>Merch</span>
+          <span onClick={() => handleNavClick('/om-oss')}>Om oss</span>
+          <span onClick={() => handleNavClick('/logg-inn')}>Logg inn</span>
         </nav>
 
         <button className="burger" onClick={toggleMenu}>
