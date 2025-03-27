@@ -38,12 +38,7 @@ const TeeTimeSearchBar: React.FC<Props> = ({ onSearch }) => {
       <select
         value={spots}
         onChange={(e) => setSpots(e.target.value)}
-        style={{
-          padding: '0.75rem 1rem',
-          borderRadius: '9999px',
-          border: '1px solid #ccc',
-          fontSize: '1rem'
-        }}
+        className="form-input"
       >
         <option value="">Alle plasser</option>
         <option value="1">1 ledig</option>
@@ -57,13 +52,7 @@ const TeeTimeSearchBar: React.FC<Props> = ({ onSearch }) => {
         value={date}
         onChange={(e) => setDate(e.target.value)}
         placeholder="Dato"
-        style={{
-          padding: '0.75rem 1rem',
-          borderRadius: '9999px',
-          border: '1px solid #ccc',
-          fontSize: '1rem',
-          minWidth: '140px'
-        }}
+        className="form-input"
       />
 
       <input
@@ -71,14 +60,7 @@ const TeeTimeSearchBar: React.FC<Props> = ({ onSearch }) => {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Søk etter bane eller sted..."
-        style={{
-          padding: '0.75rem 1rem',
-          borderRadius: '9999px',
-          border: '1px solid #ccc',
-          fontSize: '1rem',
-          flex: '1 1 300px',
-          maxWidth: '100%',
-        }}
+        className="form-input"
       />
 
       <button

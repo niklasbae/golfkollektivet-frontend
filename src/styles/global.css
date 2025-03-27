@@ -169,19 +169,26 @@ select:invalid {
   .form-stack > * {
     width: 100% !important;
     max-width: 100% !important;
-    box-sizing: border-box;
     height: 44px;
     padding: 0.5rem 1rem;
     border-radius: 12px;
-  }
-
-  /* Only center placeholder text */
-  input::placeholder,
-  textarea::placeholder {
+    box-sizing: border-box;
     text-align: center;
   }
 
+  .form-input {
+    flex: none !important;
+  }
+
+  .form-input::placeholder {
+    text-align: center;
+  }
+
+  .form-input:focus {
+    text-align: left;
+  }
+
   select {
-    text-align-last: center; /* Safari only */
+    text-align-last: center;
   }
 }
