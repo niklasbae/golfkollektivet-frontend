@@ -1,4 +1,3 @@
-// src/pages/Home.tsx
 const Home = () => {
   return (
     <div className="container" style={{ textAlign: 'center', marginTop: '5rem' }}>
@@ -7,3 +6,5 @@ const Home = () => {
     </div>
   );
 };
+
+export default Home;
