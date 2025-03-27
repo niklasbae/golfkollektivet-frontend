@@ -1,0 +1,97 @@
+body { margin: 0; font-family: sans-serif; background-color: #f8f8f8; color: #222; }
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem; /* some breathing room on small screens */
+  }
+
+/* Calendar Layout */
+.calendar-grid {
+    display: flex;
+    flex-direction: column; /* Mobile default */
+    gap: 2rem;
+  }
+  
+  @media (min-width: 768px) {
+    .calendar-grid {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+  }
+
+/* Navbar Layout */
+.navbar {
+    background: white;
+    border-bottom: 1px solid #eee;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  .navbar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo {
+    font-weight: bold;
+    text-decoration: none;
+    color: #111;
+    font-size: 1.2rem;
+  }
+  
+  .nav-links {
+    display: none;
+    gap: 1rem;
+  }
+  
+  .nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+  }
+  
+  .burger {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .bar {
+    width: 25px;
+    height: 3px;
+    background: #111;
+    border-radius: 2px;
+  }
+  
+  @media (min-width: 768px) {
+    .nav-links {
+      display: flex !important;
+    }
+  
+    .burger {
+      display: none;
+    }
+  }
+  
+  .nav-links.open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    right: 1rem;
+    background: white;
+    padding: 1rem;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    gap: 0.5rem;
+  }
