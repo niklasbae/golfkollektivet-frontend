@@ -169,19 +169,19 @@ select:invalid {
   .form-stack > * {
     width: 100% !important;
     max-width: 100% !important;
+    box-sizing: border-box;
+    height: 44px;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
   }
 
-  select,
-  input[type="date"],
-  input[type="time"],
-  input[type="text"] {
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
+  /* Only center placeholder text */
+  input::placeholder,
+  textarea::placeholder {
     text-align: center;
   }
 
   select {
-    text-align-last: center; /* for Safari */
+    text-align-last: center; /* Safari only */
   }
 }
