@@ -1,10 +1,9 @@
+// src/pages/Home.tsx
 const Home = () => {
   return (
-    <div className="container">
-      <h1>Velkommen til Golfkollektivet</h1>
-      <p>Dette er hjemmesiden for moderne, sosial golf for 20–40-åringer i Norge.</p>
+    <div className="container" style={{ textAlign: 'center', marginTop: '5rem' }}>
+      <h1>Golfkollektivet</h1>
+      <p>Vi lanserer snart! Følg med på <a href="https://www.instagram.com/">Instagram</a></p>
     </div>
   );
 };
-
-export default Home;
