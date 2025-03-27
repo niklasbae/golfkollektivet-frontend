@@ -1,5 +1,11 @@
 /* src/styles/global.css */
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 :root {
   color-scheme: light;
 }
@@ -154,14 +160,14 @@ select:invalid {
 }
 
 /* --- Mobile stacking for forms --- */
-@media (max-width: 767px) {
+@media (max-width: 1024px) {
   .form-stack {
     flex-direction: column !important;
     align-items: stretch !important;
   }
 
   .form-stack > * {
-    flex: 1 1 auto !important;
-    min-width: 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
 }
