@@ -170,4 +170,18 @@ select:invalid {
     width: 100% !important;
     max-width: 100% !important;
   }
+
+  select,
+  input[type="date"],
+  input[type="time"],
+  input[type="text"] {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  select {
+    text-align-last: center; /* for Safari */
+  }
 }

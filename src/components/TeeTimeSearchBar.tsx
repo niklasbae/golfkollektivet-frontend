@@ -76,7 +76,8 @@ const TeeTimeSearchBar: React.FC<Props> = ({ onSearch }) => {
           borderRadius: '9999px',
           border: '1px solid #ccc',
           fontSize: '1rem',
-          flex: '1 1 300px'
+          flex: '1 1 300px',
+          maxWidth: '100%',
         }}
       />
 
