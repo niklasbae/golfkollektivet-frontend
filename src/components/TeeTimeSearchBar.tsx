@@ -5,8 +5,12 @@ interface Props {
   onSearch: (filters: { date: string; query: string; spots: string }) => void;
 }
 
+const getTodayDate = (): string => {
+  return new Date().toISOString().split('T')[0];
+};
+
 const TeeTimeSearchBar: React.FC<Props> = ({ onSearch }) => {
-  const [date, setDate] = useState('');
+  const [date, setDate] = useState(getTodayDate());
   const [query, setQuery] = useState('');
   const [spots, setSpots] = useState('');
 
@@ -47,7 +51,7 @@ const TeeTimeSearchBar: React.FC<Props> = ({ onSearch }) => {
 
       <input
         type="date"
-        value={date || ""}
+        value={date}
         onChange={(e) => setDate(e.target.value)}
         placeholder="Dato"
         style={{

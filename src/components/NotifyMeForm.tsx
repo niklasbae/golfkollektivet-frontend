@@ -1,12 +1,14 @@
 // src/components/NotifyMeForm.tsx
 import { useState } from 'react';
 
+const getTodayDate = (): string => {
+  return new Date().toISOString().split('T')[0];
+};
+
 const NotifyMeForm = () => {
-  // 
-  // const [email, setEmail] = useState('');
-  const [date, setDate] = useState('');
-  const [from, setFrom] = useState('');
-  const [to, setTo] = useState('');
+  const [date, setDate] = useState(getTodayDate());
+  const [from, setFrom] = useState('07:00');
+  const [to, setTo] = useState('21:00');
   const [availableSpots, setAvailableSpots] = useState('');
 
   const handleSubscribe = () => {
@@ -31,7 +33,6 @@ const NotifyMeForm = () => {
         gap: '1rem',
         alignItems: 'center'
       }}>
-        {/* Spots first */}
         <select
           value={availableSpots}
           onChange={(e) => setAvailableSpots(e.target.value)}
@@ -46,20 +47,20 @@ const NotifyMeForm = () => {
 
         <input
           type="date"
-          value={date || ""}
+          value={date}
           onChange={(e) => setDate(e.target.value)}
           placeholder="Dato"
           style={{
             padding: '0.75rem 1rem',
             borderRadius: '9999px',
             border: '1px solid #ccc',
-            minWidth: '140px'  // prevent shrinking into a circle
+            minWidth: '140px'
           }}
         />
 
         <input
           type="time"
-          value={from || ""}
+          value={from}
           onChange={(e) => setFrom(e.target.value)}
           placeholder="Fra"
           style={{
@@ -72,7 +73,7 @@ const NotifyMeForm = () => {
 
         <input
           type="time"
-          value={to || ""}
+          value={to}
           onChange={(e) => setTo(e.target.value)}
           placeholder="Til"
           style={{
@@ -82,6 +83,7 @@ const NotifyMeForm = () => {
             minWidth: '100px'
           }}
         />
+
         <button
           onClick={handleSubscribe}
           style={{
