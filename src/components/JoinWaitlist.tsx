@@ -1,5 +1,3 @@
-import React from 'react';
-
 const JoinWaitlist = () => (
   <section style={{ padding: '2rem', textAlign: 'center' }}>
     <h2>Vil du være først ute?</h2>

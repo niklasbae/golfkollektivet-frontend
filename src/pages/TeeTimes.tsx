@@ -1,4 +1,3 @@
-import React from 'react';
 import TeeTimeCalendar from './../components/TeeTimeCalendar';
 
 const TeeTimes = () => {

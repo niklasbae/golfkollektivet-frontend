@@ -1,5 +1,3 @@
-import React from 'react';
-
 const AboutSection = () => (
   <section style={{ padding: '2rem' }}>
     <h2>Om oss</h2>

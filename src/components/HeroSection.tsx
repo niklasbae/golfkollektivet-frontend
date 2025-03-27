@@ -1,5 +1,3 @@
-import React from 'react';
-
 const HeroSection = () => (
   <section style={{ padding: '4rem 2rem', textAlign: 'center' }}>
     <h1>Golfkollektivet</h1>
