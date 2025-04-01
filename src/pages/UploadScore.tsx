@@ -243,7 +243,7 @@ const UploadScore = () => {
             fontSize: '1rem',
           }}
         >
-          {loading ? 'Sender...' : 'Send til AI 🧠'}
+          {loading ? 'Sender...' : 'Send til AI'}
         </button>
       </div>
 
