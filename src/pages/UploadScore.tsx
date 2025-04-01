@@ -58,20 +58,20 @@ const UploadScore = () => {
 
       if (res.ok) {
         const parsedData: ScoreFormData = {
-          username: 'niklas',
-          password: 'niklass9751',
+          username: '', // Leave blank for user to fill in
+          password: '', // Leave blank for user to fill in
           clubName: data.clubName || '',
           courseName: data.courseName || '',
           teeName: data.teeName || '',
           teeGender: data.teeGender || 'Male',
-          markerName: data.playerName || '',
+          markerName: '', // Leave blank for user to fill in
           scoreDate: data.scoreDate || '',
           scoreTime: data.scoreTime || '',
           holeScores: data.holes || [],
         };
         setFormData(parsedData);
 
-        const required: (keyof ScoreFormData)[] = ['clubName', 'teeName'];
+        const required: (keyof ScoreFormData)[] = ['username', 'password', 'clubName', 'teeName'];
         const missing = required.filter((key) => !parsedData[key]);
         setMissingFields(missing);
 
@@ -196,7 +196,7 @@ const UploadScore = () => {
                   {fieldLabels[key] || key}:
                   <input
                     type={key === 'password' ? 'password' : 'text'}
-                    value={String(formData[key])}
+                    value={formData[key]}
                     onChange={(e) => updateField(key, e.target.value)}
                     style={{
                       padding: '0.5rem',
