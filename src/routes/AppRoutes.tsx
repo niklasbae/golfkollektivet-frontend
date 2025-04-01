@@ -9,6 +9,7 @@ import Merch from './../pages/Merch';
 import About from './../pages/About';
 import Login from './../pages/Login';
 import Varsling from './../pages/Varsling';
+import UploadScore from './../pages/UploadScore';
 
 const AppRoutes = () => {
   return (
@@ -19,6 +20,7 @@ const AppRoutes = () => {
           <Route path="/" element={<Home />} />
           <Route path="/starttider" element={<TeeTimes />} />
           <Route path="/arrangementer" element={<Events />} />
+          <Route path="/score" element={<UploadScore />} />
           <Route path="/merch" element={<Merch />} />
           <Route path="/om-oss" element={<About />} />
           <Route path="/logg-inn" element={<Login />} />

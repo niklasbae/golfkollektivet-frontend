@@ -33,6 +33,7 @@ const Navbar = () => {
           <span onClick={() => handleNavClick('/starttider')}>Starttider</span>
           <span onClick={() => handleNavClick('/varsling')}>Få varsel</span>
           <span onClick={() => handleNavClick('/arrangementer')}>Arrangementer</span>
+          <span onClick={() => handleNavClick('/score')}>Last opp score</span>
           <span onClick={() => handleNavClick('/merch')}>Merch</span>
           <span onClick={() => handleNavClick('/om-oss')}>Om oss</span>
           <span onClick={() => handleNavClick('/logg-inn')}>Logg inn</span>
