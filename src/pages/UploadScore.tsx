@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const fieldLabels: Record<string, string> = {
   username: 'Brukernavn',
@@ -24,6 +24,23 @@ type ScoreFormData = {
   holeScores: number[];
 };
 
+type Club = {
+  clubGuid: string;
+  clubName: string;
+};
+
+type Course = {
+  courseGuid: string;
+  courseName: string;
+  tees: Tee[];
+};
+
+type Tee = {
+  teeGuid: string;
+  teeName: string;
+  teeGender: string;
+};
+
 const UploadScore = () => {
   const [image, setImage] = useState<File | null>(null);
   const [status, setStatus] = useState<string>('');
@@ -31,6 +48,15 @@ const UploadScore = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [missingFields, setMissingFields] = useState<(keyof ScoreFormData)[]>([]);
+  const [clubs, setClubs] = useState<Club[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [tees, setTees] = useState<Tee[]>([]);
+
+  useEffect(() => {
+    fetch('https://golfkollektivet-backend.onrender.com/api/Golfbox/clubs')
+      .then(res => res.json())
+      .then(data => setClubs(data));
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -58,20 +84,20 @@ const UploadScore = () => {
 
       if (res.ok) {
         const parsedData: ScoreFormData = {
-          username: '', // Leave blank for user to fill in
-          password: '', // Leave blank for user to fill in
-          clubName: data.clubName || '',
-          courseName: data.courseName || '',
-          teeName: data.teeName || '',
+          username: '',
+          password: '',
+          clubName: '',
+          courseName: '',
+          teeName: '',
           teeGender: data.teeGender || 'Male',
-          markerName: '', // Leave blank for user to fill in
+          markerName: '',
           scoreDate: data.scoreDate || '',
           scoreTime: data.scoreTime || '',
           holeScores: data.holes || [],
         };
         setFormData(parsedData);
 
-        const required: (keyof ScoreFormData)[] = ['username', 'password', 'clubName', 'teeName'];
+        const required: (keyof ScoreFormData)[] = ['username', 'password', 'clubName', 'courseName', 'teeName', 'markerName'];
         const missing = required.filter((key) => !parsedData[key]);
         setMissingFields(missing);
 
@@ -90,9 +116,29 @@ const UploadScore = () => {
     }
   };
 
-  const updateField = (field: keyof ScoreFormData, value: any) => {
+  const updateField = async (field: keyof ScoreFormData, value: any) => {
     if (!formData) return;
-    setFormData({ ...formData, [field]: value });
+    const updated = { ...formData, [field]: value };
+
+    if (field === 'clubName') {
+      const club = clubs.find(c => c.clubName === value);
+      if (club) {
+        const res = await fetch(`https://golfkollektivet-backend.onrender.com/api/Golfbox/clubs/${club.clubGuid}/courses`);
+        const data = await res.json();
+        setCourses(data);
+        setTees([]);
+        updated.courseName = '';
+        updated.teeName = '';
+      }
+    } else if (field === 'courseName') {
+      const course = courses.find(c => c.courseName === value);
+      if (course) {
+        setTees(course.tees);
+        updated.teeName = '';
+      }
+    }
+
+    setFormData(updated);
     setMissingFields((prev) => prev.filter((f) => f !== field));
   };
 
@@ -156,7 +202,16 @@ const UploadScore = () => {
     setStatus('');
     setImage(null);
     setMissingFields([]);
+    setCourses([]);
+    setTees([]);
   };
+
+  const inputStyle = (key: keyof ScoreFormData) => ({
+    padding: '0.5rem',
+    borderRadius: '8px',
+    border: `1px solid ${missingFields.includes(key) ? 'red' : '#ccc'}`,
+    backgroundColor: missingFields.includes(key) ? '#ffe6e6' : 'white',
+  });
 
   return (
     <div className="container" style={{ padding: '2rem 1rem' }}>
@@ -164,8 +219,18 @@ const UploadScore = () => {
       <p>Ta et screenshot av runden din i Golf Gamebook og last det opp her.</p>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
-        <input type="file" accept="image/*" onChange={handleFileChange} />
-        <button
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        style={{
+          padding: '0.5rem',
+          borderRadius: '8px',
+          border: '1px solid #ccc',
+          backgroundColor: 'white',
+        }}
+      />        
+      <button
           onClick={handleSubmit}
           disabled={loading}
           style={{
@@ -194,17 +259,31 @@ const UploadScore = () => {
               .map((key) => (
                 <label key={key} style={{ display: 'flex', flexDirection: 'column', fontWeight: 500 }}>
                   {fieldLabels[key] || key}:
-                  <input
-                    type={key === 'password' ? 'password' : 'text'}
-                    value={formData[key]}
-                    onChange={(e) => updateField(key, e.target.value)}
-                    style={{
-                      padding: '0.5rem',
-                      borderRadius: '8px',
-                      border: `1px solid ${missingFields.includes(key) ? 'red' : '#ccc'}`,
-                      backgroundColor: missingFields.includes(key) ? '#ffe6e6' : 'white',
-                    }}
-                  />
+                  {key === 'clubName' || key === 'courseName' || key === 'teeName' ? (
+                    <select
+                      value={formData[key]}
+                      onChange={(e) => updateField(key, e.target.value)}
+                      style={inputStyle(key)}
+                    >
+                      <option value="">Velg {fieldLabels[key]}</option>
+                      {key === 'clubName' && clubs.map(club => (
+                        <option key={club.clubGuid} value={club.clubName}>{club.clubName}</option>
+                      ))}
+                      {key === 'courseName' && courses.map(course => (
+                        <option key={course.courseGuid} value={course.courseName}>{course.courseName}</option>
+                      ))}
+                      {key === 'teeName' && tees.map(tee => (
+                        <option key={tee.teeGuid} value={tee.teeName}>{tee.teeName}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type={key === 'password' ? 'password' : 'text'}
+                      value={formData[key]}
+                      onChange={(e) => updateField(key, e.target.value)}
+                      style={inputStyle(key)}
+                    />
+                  )}
                 </label>
               ))}
           </div>
