@@ -58,6 +58,21 @@ const UploadScore = () => {
       .then(data => setClubs(data));
   }, []);
 
+  useEffect(() => {
+    const pingHealth = async () => {
+      try {
+        await fetch('https://golfkollektivet-backend.onrender.com/health');
+        console.log('✅ Backend is alive');
+      } catch (err) {
+        console.warn('⚠️ Backend health check failed:', err);
+      }
+    };
+
+    pingHealth();
+    const interval = setInterval(pingHealth, 10 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -219,18 +234,18 @@ const UploadScore = () => {
       <p>Ta et screenshot av runden din i Golf Gamebook og last det opp her.</p>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleFileChange}
-        style={{
-          padding: '0.5rem',
-          borderRadius: '8px',
-          border: '1px solid #ccc',
-          backgroundColor: 'white',
-        }}
-      />        
-      <button
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          style={{
+            padding: '0.5rem',
+            borderRadius: '8px',
+            border: '1px solid #ccc',
+            backgroundColor: 'white',
+          }}
+        />        
+        <button
           onClick={handleSubmit}
           disabled={loading}
           style={{
@@ -372,24 +387,5 @@ const UploadScore = () => {
     </div>
   );
 };
-
-useEffect(() => {
-  const pingHealth = async () => {
-    try {
-      await fetch('https://golfkollektivet-backend.onrender.com/health');
-      console.log('✅ Backend is alive');
-    } catch (err) {
-      console.warn('⚠️ Backend health check failed:', err);
-    }
-  };
-
-  // Call immediately on mount
-  pingHealth();
-
-  // Set up interval every 10 minutes
-  const interval = setInterval(pingHealth, 10 * 60 * 1000); // 600000 ms
-
-  return () => clearInterval(interval); // Clean up on unmount
-}, []);
 
 export default UploadScore;
