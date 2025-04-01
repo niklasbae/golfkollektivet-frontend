@@ -228,6 +228,20 @@ const UploadScore = () => {
     backgroundColor: missingFields.includes(key) ? '#ffe6e6' : 'white',
   });
 
+  const getScoreSums = () => {
+    if (!formData) return null;
+    const front9 = formData.holeScores.slice(0, 9);
+    const back9 = formData.holeScores.slice(9);
+    const sum = (scores: number[]) => scores.reduce((acc, val) => acc + val, 0);
+    return {
+      frontSum: sum(front9),
+      backSum: back9.length ? sum(back9) : null,
+      totalSum: sum(formData.holeScores),
+    };
+  };
+
+  const scoreSums = getScoreSums();
+
   return (
     <div className="container" style={{ padding: '2rem 1rem' }}>
       <h2>Last opp scorekort 📸</h2>
@@ -244,7 +258,7 @@ const UploadScore = () => {
             border: '1px solid #ccc',
             backgroundColor: 'white',
           }}
-        />        
+        />
         <button
           onClick={handleSubmit}
           disabled={loading}
@@ -323,6 +337,14 @@ const UploadScore = () => {
               ))}
             </div>
           </label>
+
+          {scoreSums && (
+            <div style={{ marginTop: '1rem', fontWeight: 'bold' }}>
+              <p>Front 9: {scoreSums.frontSum}</p>
+              {scoreSums.backSum !== null && <p>Back 9: {scoreSums.backSum}</p>}
+              <p>Total: {scoreSums.totalSum}</p>
+            </div>
+          )}
 
           <button
             onClick={submitToGolfbox}
