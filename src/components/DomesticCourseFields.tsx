@@ -19,8 +19,6 @@ type Props = {
 };
 
 export const DomesticCourseFields = ({
-  formData,
-  updateField,
   clubs,
   courses,
   tees,
@@ -30,7 +28,6 @@ export const DomesticCourseFields = ({
   setClubSelectValue,
   setCourseSelectValue,
   setTeeSelectValue,
-  missingFields,
   inputStyle,
   fieldLabels,
 }: Props) => {

@@ -1,14 +1,8 @@
 import { useEffect, useState } from 'react';
-import Select from 'react-select';
 import {
   StylesConfig,
   GroupBase,
   CSSObjectWithLabel,
-  ControlProps,
-  ValueContainerProps,
-  InputProps,
-  PlaceholderProps,
-  SingleValueProps
 } from 'react-select';
 import { Club, Course, Tee, ScoreFormData } from './../components/types';
 import { DomesticCourseFields } from '../components/DomesticCourseFields';
@@ -337,7 +331,7 @@ const UploadScore = () => {
 
 
   const selectStyles: SelectStyleFn = (key) => ({
-    control: (base: CSSObjectWithLabel, props: ControlProps<any, false>) => ({
+    control: (base: CSSObjectWithLabel) => ({
       ...base,
       borderColor: missingFields.includes(key) ? 'red' : base.borderColor,
       backgroundColor: missingFields.includes(key) ? '#ffe6e6' : 'white',
@@ -347,21 +341,21 @@ const UploadScore = () => {
         borderColor: missingFields.includes(key) ? 'red' : base.borderColor,
       },
     }),
-    valueContainer: (base: CSSObjectWithLabel, props: ValueContainerProps<any, false>) => ({
+    valueContainer: (base: CSSObjectWithLabel) => ({
       ...base,
       paddingLeft: '0.25rem',
     }),
-    input: (base: CSSObjectWithLabel, props: InputProps) => ({
+    input: (base: CSSObjectWithLabel) => ({
       ...base,
       margin: 0,
       padding: 0,
     }),
-    placeholder: (base: CSSObjectWithLabel, props: PlaceholderProps<any, false>) => ({
+    placeholder: (base: CSSObjectWithLabel) => ({
       ...base,
       margin: 0,
       padding: 0,
     }),
-    singleValue: (base: CSSObjectWithLabel, props: SingleValueProps<any, false>) => ({
+    singleValue: (base: CSSObjectWithLabel) => ({
       ...base,
       margin: 0,
       padding: 0,
