@@ -528,7 +528,7 @@ const UploadScore = () => {
               marginTop: '2rem',
             }}
           >
-            <div style={{ flex: '1 1 200px', minWidth: '200px' }}>
+            <div style={{ flex: '1 1 110px', minWidth: '110px' }}>
               {scoreSums && (
                 <div style={{ fontWeight: 'bold' }}>
                   <p>Front 9: {scoreSums.frontSum}</p>
@@ -541,29 +541,29 @@ const UploadScore = () => {
                 onClick={submitToGolfbox}
                 disabled={loading}
                 style={{
-                  marginTop: '2rem',
+                  marginTop: '1rem',
                   backgroundColor: '#2e7d32',
                   color: 'white',
-                  padding: '0.75rem 2rem',
+                  padding: '0.75rem 0.75rem',
                   borderRadius: '9999px',
                   border: 'none',
                   cursor: 'pointer',
-                  fontSize: '1rem',
+                  fontSize: '0.75rem',
                 }}
               >
-                {loading ? 'Sender...' : 'Send til GolfBox 🚀'}
+                {loading ? 'Sender...' : 'Send til GolfBox'}
               </button>
             </div>
 
             {processedImageUrl && (
-              <div style={{ flex: '1 1 250px', minWidth: '250px' }}>
+              <div style={{ flex: '1 1 190px', minWidth: '190px' }}>
                 <h4 style={{ marginBottom: '0.5rem' }}>📷 Originalt bilde</h4>
                 <img
                   src={processedImageUrl}
                   alt="Opplastet scorekort"
                   style={{
                     width: '100%',
-                    maxWidth: '250px',
+                    maxWidth: '190px',
                     borderRadius: '8px',
                     boxShadow: '0 0 10px rgba(0,0,0,0.1)',
                   }}
