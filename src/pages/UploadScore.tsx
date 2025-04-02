@@ -1,6 +1,39 @@
 import { useEffect, useState } from 'react';
 import Select from 'react-select';
 
+const cropImage = async (file: File, crop: [number, number, number, number]): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        img.src = reader.result;
+      }
+    };
+
+    img.onload = () => {
+      const [x, y, width, height] = crop;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return reject('Canvas context not found');
+
+      ctx.drawImage(img, x, y, width, height, 0, 0, width, height);
+      const croppedDataUrl = canvas.toDataURL('image/png');
+      resolve(croppedDataUrl);
+    };
+
+    img.onerror = reject;
+    reader.onerror = reject;
+
+    reader.readAsDataURL(file);
+  });
+};
+
 const fieldLabels: Record<string, string> = {
   username: 'Brukernavn',
   password: 'Passord',
@@ -44,6 +77,7 @@ type Tee = {
 
 const UploadScore = () => {
   const [image, setImage] = useState<File | null>(null);
+  const [processedImageUrl, setProcessedImageUrl] = useState<string | null>(null);
   const [status, setStatus] = useState<string>('');
   const [formData, setFormData] = useState<ScoreFormData | null>(null);
   const [submitted, setSubmitted] = useState(false);
@@ -119,7 +153,7 @@ const UploadScore = () => {
 
   const handleSubmit = async () => {
     if (!image) return;
-
+    
     setStatus('Sender bildet til AI...');
     setLoading(true);
     const formData = new FormData();
@@ -147,6 +181,19 @@ const UploadScore = () => {
           holeScores: data.holes || [],
         };
         setFormData(parsedData);
+        
+        const cropY = data.cropY ?? 0;
+
+        const imgForSize = new Image();
+        imgForSize.src = URL.createObjectURL(image);
+        
+        imgForSize.onload = async () => {
+          const fullWidth = imgForSize.width;
+          const fullHeight = imgForSize.height;
+        
+          const croppedUrl = await cropImage(image, [0, cropY, fullWidth, fullHeight - cropY]);
+          setProcessedImageUrl(croppedUrl);
+        };
 
         const required: (keyof ScoreFormData)[] = ['username', 'password', 'clubName', 'courseName', 'teeName', 'markerName'];
         const missing = required.filter((key) => !parsedData[key]);
@@ -258,6 +305,7 @@ const UploadScore = () => {
     setSubmitted(false);
     setStatus('');
     setImage(null);
+    setProcessedImageUrl(null);
     setMissingFields([]);
     setCourses([]);
     setTees([]);
@@ -472,30 +520,57 @@ const UploadScore = () => {
             </div>
           </label>
 
-          {scoreSums && (
-            <div style={{ marginTop: '1rem', fontWeight: 'bold' }}>
-              <p>Front 9: {scoreSums.frontSum}</p>
-              {scoreSums.backSum !== null && <p>Back 9: {scoreSums.backSum}</p>}
-              <p>Total: {scoreSums.totalSum}</p>
-            </div>
-          )}
-
-          <button
-            onClick={submitToGolfbox}
-            disabled={loading}
+          <div
             style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '2rem',
               marginTop: '2rem',
-              backgroundColor: '#2e7d32',
-              color: 'white',
-              padding: '0.75rem 2rem',
-              borderRadius: '9999px',
-              border: 'none',
-              cursor: 'pointer',
-              fontSize: '1rem',
             }}
           >
-            {loading ? 'Sender...' : 'Send til GolfBox 🚀'}
-          </button>
+            <div style={{ flex: '1 1 200px', minWidth: '200px' }}>
+              {scoreSums && (
+                <div style={{ fontWeight: 'bold' }}>
+                  <p>Front 9: {scoreSums.frontSum}</p>
+                  {scoreSums.backSum !== null && <p>Back 9: {scoreSums.backSum}</p>}
+                  <p>Total: {scoreSums.totalSum}</p>
+                </div>
+              )}
+
+              <button
+                onClick={submitToGolfbox}
+                disabled={loading}
+                style={{
+                  marginTop: '2rem',
+                  backgroundColor: '#2e7d32',
+                  color: 'white',
+                  padding: '0.75rem 2rem',
+                  borderRadius: '9999px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '1rem',
+                }}
+              >
+                {loading ? 'Sender...' : 'Send til GolfBox 🚀'}
+              </button>
+            </div>
+
+            {processedImageUrl && (
+              <div style={{ flex: '1 1 250px', minWidth: '250px' }}>
+                <h4 style={{ marginBottom: '0.5rem' }}>📷 Originalt bilde</h4>
+                <img
+                  src={processedImageUrl}
+                  alt="Opplastet scorekort"
+                  style={{
+                    width: '100%',
+                    maxWidth: '250px',
+                    borderRadius: '8px',
+                    boxShadow: '0 0 10px rgba(0,0,0,0.1)',
+                  }}
+                />
+              </div>
+            )}
+          </div>
 
           {submitted && (
             <div style={{ marginTop: '1.5rem' }}>
