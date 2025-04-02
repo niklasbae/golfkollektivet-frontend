@@ -21,15 +21,14 @@ html {
   background-color: #f9f9f9;
 }
 
-input,
+input[type="text"],
+input[type="password"],
+input[type="number"],
 select,
-textarea,
-button {
+textarea {
   background-color: #fff;
   color: #000;
   border: 1px solid #ccc;
-  font-family: inherit;
-  font-size: 1rem;
 }
 
 button {
@@ -145,11 +144,9 @@ input[type="time"]::placeholder {
   color: #666;
 }
 
-input,
+input:not([id^="react-select-"]),
 select,
 textarea {
-  -webkit-appearance: none;
-  appearance: none;
   background-color: #fff !important;
   color: #000 !important;
   border: 1px solid #ccc;

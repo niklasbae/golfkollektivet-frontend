@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Select from 'react-select';
 
 const fieldLabels: Record<string, string> = {
   username: 'Brukernavn',
@@ -51,6 +52,9 @@ const UploadScore = () => {
   const [clubs, setClubs] = useState<Club[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [tees, setTees] = useState<Tee[]>([]);
+  const [clubSelectValue, setClubSelectValue] = useState<{ label: string; value: string } | null>(null);
+  const [courseSelectValue, setCourseSelectValue] = useState<{ label: string; value: string } | null>(null);
+  const [teeSelectValue, setTeeSelectValue] = useState<{ label: string; value: string } | null>(null);
 
   useEffect(() => {
     fetch('https://golfkollektivet-backend.onrender.com/api/Golfbox/clubs')
@@ -72,6 +76,38 @@ const UploadScore = () => {
     const interval = setInterval(pingHealth, 10 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (!formData) return;
+
+    if (formData.clubName && (!clubSelectValue || clubSelectValue.value !== formData.clubName)) {
+      setClubSelectValue({ label: formData.clubName, value: formData.clubName });
+    }
+    if (formData.courseName && (!courseSelectValue || courseSelectValue.value !== formData.courseName)) {
+      setCourseSelectValue({ label: formData.courseName, value: formData.courseName });
+    }
+    if (formData.teeName && (!teeSelectValue || teeSelectValue.value !== formData.teeName)) {
+      setTeeSelectValue({ label: formData.teeName, value: formData.teeName });
+    }
+  }, [formData]);
+
+  useEffect(() => {
+    if (clubSelectValue && formData && formData.clubName !== clubSelectValue.value) {
+      updateField('clubName', clubSelectValue.value);
+    }
+  }, [clubSelectValue]);
+
+  useEffect(() => {
+    if (courseSelectValue && formData && formData.courseName !== courseSelectValue.value) {
+      updateField('courseName', courseSelectValue.value);
+    }
+  }, [courseSelectValue]);
+
+  useEffect(() => {
+    if (teeSelectValue && formData && formData.teeName !== teeSelectValue.value) {
+      updateField('teeName', teeSelectValue.value);
+    }
+  }, [teeSelectValue]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -142,14 +178,20 @@ const UploadScore = () => {
         const data = await res.json();
         setCourses(data);
         setTees([]);
-        updated.courseName = '';
-        updated.teeName = '';
+        updated.courseName = data[0]?.courseName || '';
+        updated.teeName = data[0]?.tees?.[1]?.teeName || data[0]?.tees?.[0]?.teeName || '';
+        setTees(data[0]?.tees || []);
+        setCourseSelectValue({ label: updated.courseName, value: updated.courseName });
+        setTeeSelectValue({ label: updated.teeName, value: updated.teeName });
+        setMissingFields((prev) => prev.filter(f => f !== 'courseName' && f !== 'teeName'));
       }
     } else if (field === 'courseName') {
       const course = courses.find(c => c.courseName === value);
       if (course) {
         setTees(course.tees);
-        updated.teeName = '';
+        updated.teeName = course.tees[1]?.teeName || course.tees[0]?.teeName || '';
+        setTeeSelectValue({ label: updated.teeName, value: updated.teeName });
+        setMissingFields((prev) => prev.filter(f => f !== 'teeName'));
       }
     }
 
@@ -219,6 +261,9 @@ const UploadScore = () => {
     setMissingFields([]);
     setCourses([]);
     setTees([]);
+    setClubSelectValue(null);
+    setCourseSelectValue(null);
+    setTeeSelectValue(null);
   };
 
   const inputStyle = (key: keyof ScoreFormData) => ({
@@ -288,23 +333,112 @@ const UploadScore = () => {
               .map((key) => (
                 <label key={key} style={{ display: 'flex', flexDirection: 'column', fontWeight: 500 }}>
                   {fieldLabels[key] || key}:
-                  {key === 'clubName' || key === 'courseName' || key === 'teeName' ? (
-                    <select
-                      value={formData[key]}
-                      onChange={(e) => updateField(key, e.target.value)}
-                      style={inputStyle(key)}
-                    >
-                      <option value="">Velg {fieldLabels[key]}</option>
-                      {key === 'clubName' && clubs.map(club => (
-                        <option key={club.clubGuid} value={club.clubName}>{club.clubName}</option>
-                      ))}
-                      {key === 'courseName' && courses.map(course => (
-                        <option key={course.courseGuid} value={course.courseName}>{course.courseName}</option>
-                      ))}
-                      {key === 'teeName' && tees.map(tee => (
-                        <option key={tee.teeGuid} value={tee.teeName}>{tee.teeName}</option>
-                      ))}
-                    </select>
+                  {key === 'clubName' ? (
+                    <Select
+                      options={clubs.map(club => ({ label: club.clubName, value: club.clubName }))}
+                      value={clubSelectValue}
+                      onChange={(option) => setClubSelectValue(option)}
+                      placeholder={`Velg ${fieldLabels.clubName}`}
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          borderColor: missingFields.includes('clubName') ? 'red' : base.borderColor,
+                          backgroundColor: missingFields.includes('clubName') ? '#ffe6e6' : 'white',
+                          paddingLeft: '0.5rem',
+                        }),
+                        valueContainer: (base) => ({
+                          ...base,
+                          paddingLeft: '0.25rem',
+                        }),
+                        input: (base) => ({
+                          ...base,
+                          margin: 0,
+                          padding: 0,
+                        }),
+                        placeholder: (base) => ({
+                          ...base,
+                          margin: 0,
+                          padding: 0,
+                        }),
+                        singleValue: (base) => ({
+                          ...base,
+                          margin: 0,
+                          padding: 0,
+                        }),
+                      }}
+                    />
+                  ) : key === 'courseName' ? (
+                    <Select
+                      options={courses.map(course => ({ label: course.courseName, value: course.courseName }))}
+                      value={courseSelectValue}
+                      onChange={(option) => setCourseSelectValue(option as { label: string; value: string } | null)}
+                      placeholder={`Velg ${fieldLabels.courseName}`}
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          borderColor: missingFields.includes('courseName') ? 'red' : base.borderColor,
+                          backgroundColor: missingFields.includes('courseName') ? '#ffe6e6' : 'white',
+                          paddingLeft: '0.5rem',
+                        }),
+                        valueContainer: (base) => ({
+                          ...base,
+                          paddingLeft: '0.25rem',
+                        }),
+                        input: (base) => ({
+                          ...base,
+                          margin: 0,
+                          padding: 0,
+                        }),
+                        placeholder: (base) => ({
+                          ...base,
+                          margin: 0,
+                          padding: 0,
+                          textAlign: 'left',
+                        }),
+                        singleValue: (base) => ({
+                          ...base,
+                          margin: 0,
+                          padding: 0,
+                          textAlign: 'left',
+                        }),
+                      }}
+                    />
+                  ) : key === 'teeName' ? (
+                    <Select
+                      options={tees.map(tee => ({ label: tee.teeName, value: tee.teeName }))}
+                      value={teeSelectValue}
+                      onChange={(option) => setTeeSelectValue(option)}
+                      placeholder={`Velg ${fieldLabels.teeName}`}
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          borderColor: missingFields.includes('teeName') ? 'red' : base.borderColor,
+                          backgroundColor: missingFields.includes('teeName') ? '#ffe6e6' : 'white',
+                          paddingLeft: '0.5rem',
+                        }),
+                        valueContainer: (base) => ({
+                          ...base,
+                          paddingLeft: '0.25rem',
+                        }),
+                        input: (base) => ({
+                          ...base,
+                          margin: 0,
+                          padding: 0,
+                        }),
+                        placeholder: (base) => ({
+                          ...base,
+                          margin: 0,
+                          padding: 0,
+                          textAlign: 'left',
+                        }),
+                        singleValue: (base) => ({
+                          ...base,
+                          margin: 0,
+                          padding: 0,
+                          textAlign: 'left',
+                        }),
+                      }}
+                    />
                   ) : (
                     <input
                       type={key === 'password' ? 'password' : 'text'}
