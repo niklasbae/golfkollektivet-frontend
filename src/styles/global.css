@@ -189,3 +189,72 @@ select:invalid {
     text-align-last: center;
   }
 }
+
+@media (max-width: 767px) {
+  .hole-table {
+    min-width: unset !important;
+    width: 100% !important;
+    overflow-x: auto;
+    display: block;
+  }
+
+  .hole-table table {
+    width: 100%;
+    display: block;
+    overflow-x: auto;
+  }
+
+  .hole-table input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+.hole-table {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+.hole-table table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 600px;
+}
+
+@media (max-width: 767px) {
+  .hole-table {
+    margin-top: 2rem;
+  }
+
+  .hole-details-wrapper .hole-tables {
+    flex-direction: column;
+  }
+
+  .hole-details-wrapper .hole-table-block {
+    width: 100%;
+  }
+}
+
+@media (max-width: 767px) {
+  .scorecard-mobile-grid {
+    display: grid;
+    grid-template-columns: 0.4fr 0.6fr;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .scorecard-mobile-table {
+    width: 100%;
+  }
+
+  .scorecard-mobile-image {
+    width: 100%;
+  }
+
+  .scorecard-mobile-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+}
