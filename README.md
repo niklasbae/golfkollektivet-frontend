@@ -17,6 +17,7 @@ fortsette å refaktorere uploadScore, bruke upload-compare for å få tilbake ga
 fikset i gammel
 par kommer fra kalkulert verdi
 HCP og par i tabellen settes riktig
+markør shit
 
 
 
