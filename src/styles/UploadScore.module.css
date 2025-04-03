@@ -1,0 +1,124 @@
+.holeDetailsWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 0;
+  }
+  
+  .holeTable {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 600px;
+  }
+  
+  .verticalTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .verticalTable th,
+  .verticalTable td,
+  .holeTable th,
+  .holeTable td {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  
+  .inputCell {
+    width: 50px;
+    padding: 0.3rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    text-align: center;
+  }
+  
+  .summaryTable {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 600px;
+  }
+  
+  @media (max-width: 767px) {
+    .verticalTable th,
+    .verticalTable td {
+      font-size: 0.5rem;
+      padding: 0.4rem;
+    }
+  
+    .inputCell {
+      font-size: 0.5rem;
+      padding: 0.25rem;
+    }
+  }
+
+  .previewTitle {
+    margin-bottom: 0.5rem;
+  }
+  
+  .scorecardImage {
+    width: 100%;
+    max-width: 190px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  @media (min-width: 768px) {
+    .scorecardImage {
+      max-width: 300px;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .scorecardImage {
+      max-width: 400px;
+    }
+  }
+  
+  .scorecardDesktopImage {
+    flex: 1 1 190px;
+    min-width: 190px;
+  }
+  
+  .scorecardMobileImage img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .initialUploadWrapper {
+    background: #f9f9f9;
+    padding: 2rem;
+    padding-left: 1rem;
+    border-radius: 1.5rem;
+    max-width: 600px;
+    margin: 2rem auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .checkboxLabel {
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .fileInput {
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  .primaryButton {
+    background-color: #000b26;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 999px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+  }

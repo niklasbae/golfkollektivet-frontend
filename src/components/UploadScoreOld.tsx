@@ -264,7 +264,7 @@ const fieldLabels: Record<string, string> = {
 };
 
 
-const UploadScore = () => {
+const UploadScoreOld = () => {
   const [image, setImage] = useState<File | null>(null);
   const [processedImageUrl, setProcessedImageUrl] = useState<string | null>(null);
   const [status, setStatus] = useState<string>('');
@@ -280,8 +280,8 @@ const UploadScore = () => {
     scoreTime: '',
     markerName: '',
     par: 72,
-    courseRating: 73,
-    slope: 138,
+    courseRating: 0,
+    slope: 0,
     holes: Array(18).fill(null).map((_, i) => ({
       holeNumber: i + 1,
       par: 4,
@@ -444,10 +444,13 @@ const UploadScore = () => {
       const data = await res.json();
   
       if (isForeignClub) {
-      var calculatedPar = 0;
+  
         // ✅ Update foreignFormData directly
-        setForeignFormData((prev) => {
-          const updatedHoles = Array(18).fill(null).map((_, i) => {
+        setForeignFormData((prev) => ({
+          ...prev,
+          scoreDate: data.scoreDate || '',
+          scoreTime: data.scoreTime || '',
+          holes: Array(18).fill(null).map((_, i) => {
             const h = data.structuredHoles?.[i] || {};
             return {
               holeNumber: h.holeNumber || i + 1,
@@ -455,28 +458,42 @@ const UploadScore = () => {
               hcp: h.hcp ?? prev.holes[i]?.hcp ?? i + 1,
               strokes: h.score ?? prev.holes[i]?.strokes ?? 0,
             };
-          });
-        
-          calculatedPar = updatedHoles.reduce((sum, hole) => sum + hole.par, 0);
-        
-          return {
-            ...prev,
-            scoreDate: data.scoreDate || '',
-            scoreTime: data.scoreTime || '',
-            holes: updatedHoles,
-            par: calculatedPar,
-          };
-        });
+          }),
+        }));
 
       setShowForeignExtras(true);
   
+        // Fetch foreign course metadata using parsed values (optional club/course/tee names if later extracted)
+      try {
+        const metaRes = await fetch('https://golfkollektivet-backend.onrender.com/api/Golfbox/foreign-course-data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            clubName: foreignFormData.manualClubName,
+            courseName: foreignFormData.manualCourseName,
+            teeName: foreignFormData.manualTeeName,
+            country: country || '',
+          }),
+        });
 
-        setForeignFormData(prev => ({
-          ...prev,
-          par: calculatedPar || prev.par,
-          courseRating: 73,
-          slope: 138,
-        }));
+        const metaData = await metaRes.json();
+
+        if (metaData) {
+          setCoursePar(metaData.coursePar || 0);
+          setCourseRating(metaData.courseRating || 0);
+          setSlope(metaData.slope || 0);
+          setForeignNote(metaData.note || '');
+
+          setForeignFormData(prev => ({
+            ...prev,
+            par: metaData.coursePar || prev.par,
+            courseRating: metaData.courseRating || prev.courseRating,
+            slope: metaData.slope || prev.slope,
+          }));
+        }
+      } catch (metaErr) {
+        console.warn('❌ Failed to fetch foreign course metadata:', metaErr);
+      }
 
         // Crop image
       const cropY = data.cropY ?? 300;
@@ -490,7 +507,7 @@ const UploadScore = () => {
         setProcessedImageUrl(croppedUrl);
       };
 
-      setStatus(' Fyll inn Cr og Slope manuelt');
+      setStatus('✅ Cr og Slope tolket for internasjonal klubb, dette er ca-verdier som ikke utgjør stor forskjell. Fyll inn nøyaktig baneinfo manuelt hvis ønskelig.');
       return;
     }
   
@@ -618,9 +635,9 @@ const UploadScore = () => {
         scoreDate: foreignFormData.scoreDate,
         scoreTime: foreignFormData.scoreTime,
         markerName: foreignFormData.markerName,
-        par: foreignFormData.par,
-        courseRating: foreignFormData.courseRating,
-        slope: foreignFormData.slope,
+        par: coursePar,
+        courseRating,
+        slope,
         holes: foreignFormData.holes,
       };
     
@@ -715,8 +732,8 @@ const UploadScore = () => {
       scoreTime: '',
       markerName: '',
       par: 72,
-      courseRating: 73,
-      slope: 138,
+      courseRating: 0,
+      slope: 0,
       holes: Array(18).fill(null).map((_, i) => ({
         holeNumber: i + 1,
         par: 4,
@@ -727,8 +744,8 @@ const UploadScore = () => {
     setForeignMissingFields([]);
     setCountry('');
     setCoursePar(0);
-    setCourseRating(73);
-    setSlope(138);
+    setCourseRating(0);
+    setSlope(0);
     setForeignNote('');
   };
 
@@ -1240,4 +1257,4 @@ const UploadScore = () => {
   );
 };
 
-export default UploadScore;
+export default UploadScoreOld;

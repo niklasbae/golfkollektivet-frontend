@@ -10,6 +10,7 @@ import About from './../pages/About';
 import Login from './../pages/Login';
 import Varsling from './../pages/Varsling';
 import UploadScore from './../pages/UploadScore';
+import CompareUpload from '../pages/CompateUpload';
 
 const AppRoutes = () => {
   return (
@@ -25,6 +26,7 @@ const AppRoutes = () => {
           <Route path="/om-oss" element={<About />} />
           <Route path="/logg-inn" element={<Login />} />
           <Route path="/varsling" element={<Varsling />} />
+          <Route path="/compare-upload" element={<CompareUpload />} />
         </Routes>
       </main>
       <Footer />
