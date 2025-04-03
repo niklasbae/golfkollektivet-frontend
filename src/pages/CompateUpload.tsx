@@ -1,4 +1,3 @@
-import React from 'react';
 import UploadScore from '../components/UploadScore'; // ✅ New component
 import OldUploadScore from '../components/UploadScoreOld'; // 🛠 Create this file with old code
 

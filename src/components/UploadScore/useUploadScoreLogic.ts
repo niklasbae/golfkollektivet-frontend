@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Club, Course, Tee, ScoreFormData, ForeignScoreFormData, UploadScoreFormProps } from './types';
+import { Club, Course, Tee, ScoreFormData, ForeignScoreFormData } from './types';
 
 export const defaultScoreFormData: ScoreFormData = {
   username: '',
@@ -83,10 +83,9 @@ export const useUploadScoreLogic = () => {
   const [processedImageUrl, setProcessedImageUrl] = useState<string | null>(null);
   const [showForm, setShowForm] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-
-  const [clubs, setClubs] = useState<Club[]>([]);
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [tees, setTees] = useState<Tee[]>([]);
+  const [clubs] = useState<Club[]>([]);
+  const [courses] = useState<Course[]>([]);
+  const [tees] = useState<Tee[]>([]);
 
   const [missingFields, setMissingFields] = useState<(keyof ScoreFormData)[]>([]);
   const [foreignMissingFields, setForeignMissingFields] = useState<(keyof ForeignScoreFormData)[]>([]);
@@ -96,9 +95,6 @@ export const useUploadScoreLogic = () => {
   const [teeSelectValue, setTeeSelectValue] = useState<{ label: string; value: string } | null>(null);
 
   const [country, setCountry] = useState<string>('');
-  const [coursePar, setCoursePar] = useState<number>(72);
-  const [courseRating, setCourseRating] = useState<number>(0);
-  const [slope, setSlope] = useState<number>(0);
 
   const inputStyle = (key: string): React.CSSProperties => ({
     padding: '0.5rem',
@@ -149,9 +145,6 @@ export const useUploadScoreLogic = () => {
     setProcessedImageUrl(null);
     setShowForeignExtras(false);
     setForeignNote('');
-    setCoursePar(72);
-    setCourseRating(0);
-    setSlope(0);
     setClubSelectValue(null);
     setCourseSelectValue(null);
     setTeeSelectValue(null);

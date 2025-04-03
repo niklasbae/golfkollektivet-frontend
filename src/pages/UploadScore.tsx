@@ -321,9 +321,6 @@ const UploadScore = () => {
   };
   const activeHoleScores = isForeignClub ? foreignFormData.holes.map(h => h.strokes) : safeFormData.holeScores;
   const [country, setCountry] = useState('');
-  const [coursePar, setCoursePar] = useState<number>(0);
-  const [slope, setSlope] = useState<number>(0);
-  const [courseRating, setCourseRating] = useState<number>(0);
   const [foreignNote, setForeignNote] = useState<string>('');
   const [foreignMissingFields, setForeignMissingFields] = useState<(keyof ForeignScoreFormData)[]>([]);
   const [showForeignExtras, setShowForeignExtras] = useState(false);
@@ -726,9 +723,6 @@ const UploadScore = () => {
     });
     setForeignMissingFields([]);
     setCountry('');
-    setCoursePar(0);
-    setCourseRating(73);
-    setSlope(138);
     setForeignNote('');
   };
 
