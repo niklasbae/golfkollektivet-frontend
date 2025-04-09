@@ -10,14 +10,8 @@ fjerne hele skjema i internasjonal flyt når man resetter
 jobbe med/teste nøyaktigheten på prompt på internasjonalt scorekort - gjøre den som fungerer veldig bra først (score), så de andre. sånn at hvert fall score blir riktig
 innlogget side
  - favoritter
-markør resultater populeres i dropdown
 feilhåndtering
 fortsette å refaktorere uploadScore, bruke upload-compare for å få tilbake gammel funksjonalitet
-
-fikset i gammel
-par kommer fra kalkulert verdi
-HCP og par i tabellen settes riktig
-markør shit
 
 
 

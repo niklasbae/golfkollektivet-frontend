@@ -1,20 +1,12 @@
+//HoleDetailsGrid.tsx
+
 import { useEffect, useState } from 'react';
 import styles from '../../styles/UploadScore.module.css';
-
-type Hole = {
-  holeNumber: number;
-  par: number;
-  hcp: number;
-  strokes: number;
-};
+import { Hole, UpdateHoleDataFn } from './types'
 
 type Props = {
   holes: Hole[];
-  updateHoleData: (
-    index: number,
-    field: 'par' | 'hcp' | 'strokes',
-    value: number
-  ) => void;
+  updateHoleData: UpdateHoleDataFn
 };
 
 const HoleDetailsGrid = ({ holes, updateHoleData }: Props) => {
@@ -29,11 +21,10 @@ const HoleDetailsGrid = ({ holes, updateHoleData }: Props) => {
 
   const front9 = holes.slice(0, 9);
   const back9 = holes.slice(9, 18);
-
+  const hasBack9 = back9.length > 0 && back9.some(h => h.strokes > 0);
+  
   const sum = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
   const scoreSum = (slice: Hole[]) => sum(slice.map((h) => h.strokes));
-  const parTotal = sum(holes.map((h) => h.par));
-  const scoreTotal = sum(holes.map((h) => h.strokes));
 
   return (
     <div className={styles.holeDetailsWrapper}>
@@ -42,26 +33,13 @@ const HoleDetailsGrid = ({ holes, updateHoleData }: Props) => {
           ? renderVerticalGrid(front9, updateHoleData, 0, scoreSum(front9))
           : renderHorizontalGrid(front9, updateHoleData, 0, scoreSum(front9))}
       </div>
-      <div>
-        {isMobile
-          ? renderVerticalGrid(back9, updateHoleData, 9, scoreSum(back9))
-          : renderHorizontalGrid(back9, updateHoleData, 9, scoreSum(back9))}
-      </div>
-      <div>
-        <h5>📊 Totalt</h5>
-        <table className={styles.summaryTable}>
-          <tbody>
-            <tr>
-              <td className={styles.inputCell}>Par</td>
-              <td className={styles.inputCell}>{parTotal}</td>
-            </tr>
-            <tr>
-              <td className={styles.inputCell}>Score</td>
-              <td className={styles.inputCell}>{scoreTotal}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      {hasBack9 && (
+        <div>
+          {isMobile
+            ? renderVerticalGrid(back9, updateHoleData, 9, scoreSum(back9))
+            : renderHorizontalGrid(back9, updateHoleData, 9, scoreSum(back9))}
+        </div>
+      )}
     </div>
   );
 };

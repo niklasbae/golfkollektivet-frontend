@@ -1,4 +1,4 @@
-import UploadScore from '../components/UploadScore'; // ✅ New component
+import UploadScore from '../components/UploadScore/UploadScore'; // ✅ New component
 import OldUploadScore from '../components/UploadScoreOld'; // 🛠 Create this file with old code
 
 const CompareUpload = () => {

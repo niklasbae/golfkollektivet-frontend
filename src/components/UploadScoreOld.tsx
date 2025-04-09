@@ -265,6 +265,14 @@ const fieldLabels: Record<string, string> = {
 
 
 const UploadScoreOld = () => {
+  const [markerSearch, setMarkerSearch] = useState('');
+  const [markerOptions, setMarkerOptions] = useState<{ guid: string; name: string; display: string; club: string }[]>([]);
+  const [selectedMarker, setSelectedMarker] = useState<{
+    guid: string;
+    name: string;
+    display: string;
+    club: string;
+  } | null>(null);
   const [image, setImage] = useState<File | null>(null);
   const [processedImageUrl, setProcessedImageUrl] = useState<string | null>(null);
   const [status, setStatus] = useState<string>('');
@@ -280,8 +288,8 @@ const UploadScoreOld = () => {
     scoreTime: '',
     markerName: '',
     par: 72,
-    courseRating: 0,
-    slope: 0,
+    courseRating: 73,
+    slope: 138,
     holes: Array(18).fill(null).map((_, i) => ({
       holeNumber: i + 1,
       par: 4,
@@ -321,9 +329,6 @@ const UploadScoreOld = () => {
   };
   const activeHoleScores = isForeignClub ? foreignFormData.holes.map(h => h.strokes) : safeFormData.holeScores;
   const [country, setCountry] = useState('');
-  const [coursePar, setCoursePar] = useState<number>(0);
-  const [slope, setSlope] = useState<number>(0);
-  const [courseRating, setCourseRating] = useState<number>(0);
   const [foreignNote, setForeignNote] = useState<string>('');
   const [foreignMissingFields, setForeignMissingFields] = useState<(keyof ForeignScoreFormData)[]>([]);
   const [showForeignExtras, setShowForeignExtras] = useState(false);
@@ -444,13 +449,10 @@ const UploadScoreOld = () => {
       const data = await res.json();
   
       if (isForeignClub) {
-  
+      var calculatedPar = 0;
         // ✅ Update foreignFormData directly
-        setForeignFormData((prev) => ({
-          ...prev,
-          scoreDate: data.scoreDate || '',
-          scoreTime: data.scoreTime || '',
-          holes: Array(18).fill(null).map((_, i) => {
+        setForeignFormData((prev) => {
+          const updatedHoles = Array(18).fill(null).map((_, i) => {
             const h = data.structuredHoles?.[i] || {};
             return {
               holeNumber: h.holeNumber || i + 1,
@@ -458,43 +460,44 @@ const UploadScoreOld = () => {
               hcp: h.hcp ?? prev.holes[i]?.hcp ?? i + 1,
               strokes: h.score ?? prev.holes[i]?.strokes ?? 0,
             };
-          }),
-        }));
+          });
+        
+          calculatedPar = updatedHoles.reduce((sum, hole) => sum + hole.par, 0);
+        
+          return {
+            ...prev,
+            scoreDate: data.scoreDate || '',
+            scoreTime: data.scoreTime || '',
+            holes: updatedHoles,
+            par: calculatedPar,
+          };
+        });
 
       setShowForeignExtras(true);
   
-        // Fetch foreign course metadata using parsed values (optional club/course/tee names if later extracted)
-      try {
-        const metaRes = await fetch('https://golfkollektivet-backend.onrender.com/api/Golfbox/foreign-course-data', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            clubName: foreignFormData.manualClubName,
-            courseName: foreignFormData.manualCourseName,
-            teeName: foreignFormData.manualTeeName,
-            country: country || '',
-          }),
-        });
 
-        const metaData = await metaRes.json();
+        setForeignFormData(prev => ({
+          ...prev,
+          par: calculatedPar || prev.par,
+          courseRating: 73,
+          slope: 138,
+        }));
 
-        if (metaData) {
-          setCoursePar(metaData.coursePar || 0);
-          setCourseRating(metaData.courseRating || 0);
-          setSlope(metaData.slope || 0);
-          setForeignNote(metaData.note || '');
-
-          setForeignFormData(prev => ({
-            ...prev,
-            par: metaData.coursePar || prev.par,
-            courseRating: metaData.courseRating || prev.courseRating,
-            slope: metaData.slope || prev.slope,
-          }));
+        if (markerSearch.length >= 2) {
+          const markerRes = await fetch(`https://golfkollektivet-backend.onrender.com/api/Golfbox/search-marker?input=${encodeURIComponent(markerSearch)}`);
+          const markerData = await markerRes.json();
+          setMarkerOptions(markerData);
+        
+          if (markerData.length === 1) {
+            const marker = markerData[0];
+            setSelectedMarker(marker);
+            if (isForeignClub) {
+              setForeignFormData(prev => ({ ...prev, markerName: marker.display }));
+            } else {
+              updateField('markerName', marker.display);
+            }
+          }
         }
-      } catch (metaErr) {
-        console.warn('❌ Failed to fetch foreign course metadata:', metaErr);
-      }
-
         // Crop image
       const cropY = data.cropY ?? 300;
       const imgForSize = new Image();
@@ -507,7 +510,7 @@ const UploadScoreOld = () => {
         setProcessedImageUrl(croppedUrl);
       };
 
-      setStatus('✅ Cr og Slope tolket for internasjonal klubb, dette er ca-verdier som ikke utgjør stor forskjell. Fyll inn nøyaktig baneinfo manuelt hvis ønskelig.');
+      setStatus(' Fyll inn Cr og Slope manuelt');
       return;
     }
   
@@ -526,6 +529,22 @@ const UploadScoreOld = () => {
       };
 
       setFormData(parsedData);
+
+      if (markerSearch.length >= 2) {
+        const markerRes = await fetch(`https://golfkollektivet-backend.onrender.com/api/Golfbox/search-marker?input=${encodeURIComponent(markerSearch)}`);
+        const markerData = await markerRes.json();
+        setMarkerOptions(markerData);
+      
+        if (markerData.length === 1) {
+          const marker = markerData[0];
+          setSelectedMarker(marker);
+          if (isForeignClub) {
+            setForeignFormData(prev => ({ ...prev, markerName: marker.display }));
+          } else {
+            updateField('markerName', marker.display);
+          }
+        }
+      }
 
       const cropY = data.cropY ?? 300;
       const imgForSize = new Image();
@@ -604,7 +623,6 @@ const UploadScoreOld = () => {
         'password',
         'manualCourseName',
         'manualTeeName',
-        'markerName',
         'scoreDate',
         'scoreTime',
       ];
@@ -626,27 +644,26 @@ const UploadScoreOld = () => {
       }
   
     
+      const {
+        markerName: _ignoreMarkerName,
+        ...rest
+      } = foreignFormData;
+      
       const payload = {
-        username: foreignFormData.username,
-        password: foreignFormData.password,
+        ...rest,
         country,
-        manualCourseName: foreignFormData.manualCourseName,
-        manualTeeName: foreignFormData.manualTeeName,
-        scoreDate: foreignFormData.scoreDate,
-        scoreTime: foreignFormData.scoreTime,
-        markerName: foreignFormData.markerName,
-        par: coursePar,
-        courseRating,
-        slope,
-        holes: foreignFormData.holes,
+        markerGuid: selectedMarker?.guid || '',
       };
+      
     
       setLoading(true);
     try {
+      
       const res = await fetch('https://golfkollektivet-backend.onrender.com/api/Golfbox/submit-foreign-score', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        
+        body: JSON.stringify(payload)
       });
 
       if (res.ok) {
@@ -663,6 +680,7 @@ const UploadScoreOld = () => {
 
     return;
   }
+
   if (!formData) return;
 
   const requiredFields: (keyof ScoreFormData)[] = [
@@ -687,13 +705,17 @@ const UploadScoreOld = () => {
     setStatus('❌ Hullscorer må ha minst 9 verdier.');
     return;
   }
-
+  
   setLoading(true);
   try {
+    const { markerName, ...rest } = formData;
     const res = await fetch('https://golfkollektivet-backend.onrender.com/api/golfbox/submit-score', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
+      body: JSON.stringify({
+        ...rest,
+        markerGuid: selectedMarker?.guid || '',
+      })
     });
 
     if (res.ok) {
@@ -732,8 +754,8 @@ const UploadScoreOld = () => {
       scoreTime: '',
       markerName: '',
       par: 72,
-      courseRating: 0,
-      slope: 0,
+      courseRating: 73,
+      slope: 138,
       holes: Array(18).fill(null).map((_, i) => ({
         holeNumber: i + 1,
         par: 4,
@@ -743,9 +765,6 @@ const UploadScoreOld = () => {
     });
     setForeignMissingFields([]);
     setCountry('');
-    setCoursePar(0);
-    setCourseRating(0);
-    setSlope(0);
     setForeignNote('');
   };
 
@@ -803,7 +822,24 @@ const UploadScoreOld = () => {
         />
       )}
 
+      {/* Marker Search */}
+      <div className="form-grid" style={{ marginBottom: '1.25rem' }}>
+        <label style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+          Søk etter markør (navn eller medlemsnummer):
+          <input
+            type="text"
+            value={markerSearch}
+            onChange={(e) => setMarkerSearch(e.target.value)}
+            style={{
+              padding: '0.5rem',
+              borderRadius: '8px',
+              border: '1px solid #ccc',
+              backgroundColor: 'white',
+            }}
+          />
+        </label>
 
+      </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
         <input
           type="file"
@@ -885,18 +921,18 @@ const UploadScoreOld = () => {
           <div className="form-grid">
             {isForeignClub ? (
               <>
-                {(['username', 'password', 'markerName', 'scoreDate', 'scoreTime'] as (keyof ForeignScoreFormData)[]).map((key) => {
+                {(['username', 'password', 'scoreDate', 'scoreTime'] as (keyof ForeignScoreFormData)[]).map((key) => {
                   const value = foreignFormData[key];
-                  if (typeof value !== 'string' && typeof value !== 'number') return null; // skip if value is a number[]
+                  if (typeof value !== 'string' && typeof value !== 'number') return null;
 
                   return (
                     <label
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      fontWeight: 500,
-                      gap: '0.25rem',
-                    }} key={key}>
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        fontWeight: 500,
+                        gap: '0.25rem',
+                      }} key={key}>
                       {fieldLabels[key]}:
                       <input
                         type={key === 'password' ? 'password' : 'text'}
@@ -907,6 +943,32 @@ const UploadScoreOld = () => {
                     </label>
                   );
                 })}
+
+                {(selectedMarker || markerOptions.length > 0 || isForeignClub) && (
+                  <label style={{ display: 'flex', flexDirection: 'column', fontWeight: 500, gap: '0.25rem' }}>
+                    Markør:
+                    <select
+                      value={selectedMarker?.guid || ''}
+                      onChange={(e) => {
+                        const selected = markerOptions.find(m => m.guid === e.target.value);
+                        setSelectedMarker(selected || null);
+                        if (isForeignClub) {
+                          updateForeignField('markerName', selected?.display || '');
+                        } else {
+                          updateField('markerName', selected?.display || '');
+                        }
+                      }}
+                      style={inputStyle('markerName')}
+                    >
+                      <option value="">Velg markør</option>
+                      {markerOptions.map((marker) => (
+                        <option key={marker.guid} value={marker.guid}>
+                          {marker.display}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
               </>
             ) : (
               <>
@@ -959,21 +1021,27 @@ const UploadScoreOld = () => {
                     fieldLabels={fieldLabels}
                   />
 
-                  <label style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    fontWeight: 500,
-                    fontSize: '1rem',
-                    gap: '0.25rem',
-                  }}>
-                    {fieldLabels.markerName}:
-                    <input
-                      type="text"
-                      value={safeFormData.markerName}
-                      onChange={(e) => updateField('markerName', e.target.value)}
-                      style={inputStyle('markerName')}
-                    />
-                  </label>
+                  {formData && markerOptions.length > 0 && (
+                    <label style={{ display: 'flex', flexDirection: 'column', fontWeight: 500, fontSize: '1rem', gap: '0.25rem' }}>
+                      {fieldLabels.markerName}:
+                      <select
+                        value={selectedMarker?.guid || ''}
+                        onChange={(e) => {
+                          const selected = markerOptions.find(m => m.guid === e.target.value);
+                          setSelectedMarker(selected || null);
+                          updateField('markerName', selected?.display || ''); // this updates the text field that gets sent
+                        }}
+                        style={inputStyle('markerName')}
+                      >
+                        <option value="">Velg markør</option>
+                        {markerOptions.map((marker) => (
+                          <option key={marker.guid} value={marker.guid}>
+                            {marker.display}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  )}
 
                   <label style={{
                     display: 'flex',

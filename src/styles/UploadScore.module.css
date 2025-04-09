@@ -1,124 +1,267 @@
+/* ---------- 🎯 Table Styling for Hole Inputs ---------- */
+/* Hide spinners for number inputs (Chrome, Safari, Edge) */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide spinners for Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 .holeDetailsWrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 0;
+}
+
+.holeTable,
+.domesticHoleTable {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 600px;
+  margin-top: 1rem;
+}
+
+.verticalTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.holeTable th,
+.holeTable td,
+.verticalTable th,
+.verticalTable td,
+.domesticHoleTable th,
+.domesticHoleTable td {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.inputCell,
+.domesticScoreInput {
+  width: 50px;
+  padding: 0.3rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  text-align: center;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.inputCell::placeholder,
+.domesticScoreInput::placeholder {
+  text-align: center;
+}
+
+.summaryTable {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 600px;
+}
+
+.holeTable td[colspan],
+.verticalTable td[colspan],
+.domesticHoleTable td[colspan] {
+  text-align: center;
+  font-weight: 600;
+  padding-top: 0.75rem;
+}
+
+/* ---------- 📋 NEW: Table for Domestic Hull + Score ---------- */
+
+.domesticScoreSection {
+  margin-top: 2rem;
+}
+
+/* ---------- 🔍 Image Styling ---------- */
+
+.previewTitle {
+  margin-bottom: 0.5rem;
+}
+
+.scorecardImage {
+  width: 100%;
+  max-width: 190px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 768px) {
+  .scorecardImage {
+    max-width: 300px;
   }
-  
-  .holeTable {
-    border-collapse: collapse;
-    width: 100%;
-    min-width: 600px;
+}
+
+@media (min-width: 1024px) {
+  .scorecardImage {
+    max-width: 400px;
   }
-  
-  .verticalTable {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
+}
+
+.scorecardDesktopImage {
+  flex: 1 1 190px;
+  min-width: 190px;
+}
+
+.scorecardMobileImage img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ---------- 📤 Upload & UI Elements ---------- */
+
+.initialUploadWrapper {
+  background: #f9f9f9;
+  padding: 2rem;
+  padding-left: 1rem;
+  border-radius: 1.5rem;
+  max-width: 600px;
+  margin: 2rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.checkboxLabel {
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fileInput {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.primaryButton {
+  background-color: #000b26;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* ---------- 🌐 Foreign Form Grid ---------- */
+
+.foreignFormGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* ---------- 🧾 Label & Input Field Styling ---------- */
+
+.label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.formWrapper {
+  padding: 2rem;
+  border-radius: 1.5rem;
+  background-color: #fff;
+  max-width: 900px;
+  margin: 2rem auto;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.editorSection {
+  margin-top: 2rem;
+}
+
+.submitSection {
+  margin-top: 2rem;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.successBox {
+  background-color: #e6ffee;
+  border: 1px solid #b2f0cc;
+  padding: 1rem;
+  border-radius: 1rem;
+  margin-top: 2rem;
+}
+
+.noteBox {
+  background-color: #f0f8ff;
+  border-left: 4px solid #007acc;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.statusText {
+  margin-top: 0.5rem;
+  font-weight: 500;
+  color: #007acc;
+}
+
+/* Old grid for inputs (deprecated but kept if still used elsewhere) */
+.holeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.submitButton {
+  background-color: #007acc;
+  color: white;
+  padding: 0.6rem 1.4rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+/* ---------- 📱 Mobile Scaling ---------- */
+
+@media (max-width: 767px) {
   .verticalTable th,
   .verticalTable td,
-  .holeTable th,
-  .holeTable td {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    text-align: center;
-    font-size: 0.9rem;
-    font-weight: 500;
-  }
-  
   .inputCell {
-    width: 50px;
+    font-size: 0.5rem;
+    padding: 0.25rem;
+  }
+
+  .domesticHoleTable th,
+  .domesticHoleTable td {
+    font-size: 0.6rem;
     padding: 0.3rem;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    text-align: center;
-  }
-  
-  .summaryTable {
-    border-collapse: collapse;
-    width: 100%;
-    max-width: 600px;
-  }
-  
-  @media (max-width: 767px) {
-    .verticalTable th,
-    .verticalTable td {
-      font-size: 0.5rem;
-      padding: 0.4rem;
-    }
-  
-    .inputCell {
-      font-size: 0.5rem;
-      padding: 0.25rem;
-    }
   }
 
-  .previewTitle {
-    margin-bottom: 0.5rem;
+  .domesticScoreInput {
+    width: 36px;
+    font-size: 0.7rem;
   }
-  
-  .scorecardImage {
-    width: 100%;
-    max-width: 190px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  @media (min-width: 768px) {
-    .scorecardImage {
-      max-width: 300px;
-    }
-  }
-  
-  @media (min-width: 1024px) {
-    .scorecardImage {
-      max-width: 400px;
-    }
-  }
-  
-  .scorecardDesktopImage {
-    flex: 1 1 190px;
-    min-width: 190px;
-  }
-  
-  .scorecardMobileImage img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-
-  .initialUploadWrapper {
-    background: #f9f9f9;
-    padding: 2rem;
-    padding-left: 1rem;
-    border-radius: 1.5rem;
-    max-width: 600px;
-    margin: 2rem auto;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .checkboxLabel {
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .fileInput {
-    padding: 0.5rem;
-    font-size: 1rem;
-  }
-  
-  .primaryButton {
-    background-color: #000b26;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 999px;
-    border: none;
-    font-size: 1rem;
-    cursor: pointer;
-  }
+}
