@@ -39,8 +39,7 @@ const InitialUploadStep = ({
 }: Props) => {
   return (
     <div className={styles.initialUploadWrapper}>
-      <h2>Last opp scorekort 📸</h2>
-      {status && <p className={styles.statusText}>{status}</p>}
+      <h2>Last opp scorekort</h2>
       <p>Ta et screenshot av runden din i Golf Gamebook og last det opp her.</p>
 
       <label className={styles.checkboxLabel}>
@@ -63,7 +62,7 @@ const InitialUploadStep = ({
         />
       )}
 
-      <div className={styles.formGrid} style={{ marginBottom: '1.25rem' }}>
+      <div className={styles.formGrid} style={{ marginBottom: '0.75rem' }}>
         <label style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
           Søk etter markør (navn eller medlemsnummer):
           <input
@@ -79,7 +78,7 @@ const InitialUploadStep = ({
           />
         </label>
       </div>
-
+      {status && <p className={styles.statusText}>{status}</p>}
       <input
         type="file"
         accept="image/*"

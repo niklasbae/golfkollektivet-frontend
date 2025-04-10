@@ -1,42 +1,59 @@
-/* ---------- 🎯 Table Styling for Hole Inputs ---------- */
-/* Hide spinners for number inputs (Chrome, Safari, Edge) */
+/* ========================================
+🎯 INPUT STYLING
+======================================== */
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
-/* Hide spinners for Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
 }
-
-.holeDetailsWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  margin-top: 0;
+.inputCell,
+.domesticScoreInput {
+  width: 50px;
+  height: 36px;
+  padding: 0.3rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+}
+.inputCell::placeholder,
+.domesticScoreInput::placeholder {
+  text-align: center;
+}
+@media (max-width: 768px) {
+  .inputCell,
+  .domesticScoreInput {
+    width: 25px;
+    height: 20px;
+    font-size: 0.6rem;
+  }
 }
 
+/* ========================================
+📋 GENERAL TABLE STYLING
+======================================== */
 .holeTable,
-.domesticHoleTable {
+.domesticHoleTable,
+.verticalTable,
+.verticalTableMobile {
   border-collapse: collapse;
   width: 100%;
-  min-width: 600px;
-  margin-top: 1rem;
 }
-
-.verticalTable {
-  width: 100%;
-  border-collapse: collapse;
-}
-
 .holeTable th,
 .holeTable td,
-.verticalTable th,
-.verticalTable td,
 .domesticHoleTable th,
-.domesticHoleTable td {
+.domesticHoleTable td,
+.verticalTable th,
+.verticalTable td {
   padding: 0.5rem;
   border: 1px solid #ccc;
   text-align: center;
@@ -44,32 +61,19 @@ input[type="number"] {
   font-weight: 500;
 }
 
-.inputCell,
-.domesticScoreInput {
-  width: 50px;
-  padding: 0.3rem;
-  border-radius: 6px;
+.verticalTableMobile th,
+.verticalTableMobile td {
+  padding: 0.25rem;
   border: 1px solid #ccc;
   text-align: center;
-  font-family: inherit;
-  font-size: 1rem;
+  font-size: 0.7rem;
   font-weight: 500;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
-.inputCell::placeholder,
-.domesticScoreInput::placeholder {
-  text-align: center;
+.domesticHoleTable {
+  min-width: 600px;
+  margin-top: 1rem;
 }
-
-.summaryTable {
-  border-collapse: collapse;
-  width: 100%;
-  max-width: 600px;
-}
-
 .holeTable td[colspan],
 .verticalTable td[colspan],
 .domesticHoleTable td[colspan] {
@@ -78,75 +82,173 @@ input[type="number"] {
   padding-top: 0.75rem;
 }
 
-/* ---------- 📋 NEW: Table for Domestic Hull + Score ---------- */
-
-.domesticScoreSection {
-  margin-top: 2rem;
+/* ========================================
+🏌️ DOMESTIC TABLE STYLES
+======================================== */
+.domesticVerticalWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+.domesticTablePair {
+  display: flex;
+  flex-direction: column;
+  width: 48%;
+}
+.domesticMobileTables {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  gap: 1rem;
+  align-items: flex-start;
+  width: fit-content;
+}
+@media (max-width: 767px) {
+  .domesticVerticalWrapper {
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+  }
+  .domesticTablePair {
+    width: auto;
+    flex: 0 0 auto;
+  }
+  .domesticHoleTable th,
+  .domesticHoleTable td {
+    font-size: 0.6rem;
+    padding: 0.3rem;
+  }
 }
 
-/* ---------- 🔍 Image Styling ---------- */
-
-.previewTitle {
-  margin-bottom: 0.5rem;
+/* ========================================
+⛳️ FOREIGN TABLE STYLES (More rows = tighter layout)
+======================================== */
+.foreignMobileWrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.foreignMobileTables {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  flex: 0 0 auto;
+  margin-top: 0.5rem;
+}
+.foreignMobileTable {
+  width: 100px;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+.foreignMobileTable th,
+.foreignMobileTable td {
+  padding: 0.2rem;
+  font-size: 0.6rem;
+  border: 1px solid #ccc;
+  text-align: center;
+  font-weight: 500;
 }
 
+@media (max-width: 767px) {
+  .foreignMobileTables {
+    flex-direction: column; /* 🔁 stack vertically on mobile */
+    gap: 1rem;
+  }
+
+  .foreignMobileTable {
+    width: 100%; /* full width when stacked */
+  }
+
+  .foreignMobileTable th,
+  .foreignMobileTable td {
+    font-size: 0.65rem; /* slightly larger now that they're full width */
+  }
+}
+
+
+
+/* ========================================
+🖼 IMAGE STYLING
+======================================== */
 .scorecardImage {
   width: 100%;
   max-width: 190px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 1rem;
 }
-
 @media (min-width: 768px) {
   .scorecardImage {
     max-width: 300px;
   }
 }
-
 @media (min-width: 1024px) {
   .scorecardImage {
     max-width: 400px;
   }
 }
-
 .scorecardDesktopImage {
   flex: 1 1 190px;
   min-width: 190px;
 }
-
 .scorecardMobileImage img {
   width: 100%;
+  margin-top: 1rem;
   height: auto;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* ---------- 📤 Upload & UI Elements ---------- */
+.scorecardMobileImageSecondImage img {
+  width: 100%;
+  margin-top: 3.25rem;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
+/* ========================================
+📤 UPLOAD / FORM UI
+======================================== */
 .initialUploadWrapper {
   background: #f9f9f9;
-  padding: 2rem;
-  padding-left: 1rem;
+  padding: 2rem 1rem;
+  padding-top: 0rem;
   border-radius: 1.5rem;
   max-width: 600px;
-  margin: 2rem auto;
+  margin: 2rem auto 0 auto;
+  margin-top: 0rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
-
+.initialUploadWrapper h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #000b26;
+}
+.initialUploadWrapper p {
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.5;
+}
 .checkboxLabel {
   font-size: 1rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
-
 .fileInput {
   padding: 0.5rem;
   font-size: 1rem;
 }
-
 .primaryButton {
   background-color: #000b26;
   color: white;
@@ -157,44 +259,42 @@ input[type="number"] {
   cursor: pointer;
 }
 
-/* ---------- 🌐 Foreign Form Grid ---------- */
-
-.foreignFormGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-/* ---------- 🧾 Label & Input Field Styling ---------- */
-
-.label {
-  display: flex;
-  flex-direction: column;
-  font-weight: 500;
-  font-size: 0.9rem;
-}
-
+/* ========================================
+🧾 FORM + FIELD STRUCTURE
+======================================== */
 .formWrapper {
   padding: 2rem;
   border-radius: 1.5rem;
   background-color: #fff;
   max-width: 900px;
   margin: 2rem auto;
+  margin-top: 0rem;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
-
 .formGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
   margin-bottom: 1rem;
 }
-
+.foreignFormGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
 .editorSection {
   margin-top: 2rem;
 }
-
 .submitSection {
   margin-top: 2rem;
   display: flex;
@@ -202,7 +302,6 @@ input[type="number"] {
   flex-wrap: wrap;
   align-items: center;
 }
-
 .successBox {
   background-color: #e6ffee;
   border: 1px solid #b2f0cc;
@@ -210,7 +309,6 @@ input[type="number"] {
   border-radius: 1rem;
   margin-top: 2rem;
 }
-
 .noteBox {
   background-color: #f0f8ff;
   border-left: 4px solid #007acc;
@@ -219,21 +317,12 @@ input[type="number"] {
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
-
 .statusText {
-  margin-top: 0.5rem;
+  margin: 0.25rem 0;
+  line-height: 1.5;
   font-weight: 500;
   color: #007acc;
 }
-
-/* Old grid for inputs (deprecated but kept if still used elsewhere) */
-.holeGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
 .submitButton {
   background-color: #007acc;
   color: white;
@@ -244,24 +333,12 @@ input[type="number"] {
   cursor: pointer;
 }
 
-/* ---------- 📱 Mobile Scaling ---------- */
-
-@media (max-width: 767px) {
-  .verticalTable th,
-  .verticalTable td,
-  .inputCell {
-    font-size: 0.5rem;
-    padding: 0.25rem;
-  }
-
-  .domesticHoleTable th,
-  .domesticHoleTable td {
-    font-size: 0.6rem;
-    padding: 0.3rem;
-  }
-
-  .domesticScoreInput {
-    width: 36px;
-    font-size: 0.7rem;
-  }
+/* ========================================
+🧾 OLD/LEGACY
+======================================== */
+.holeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+  gap: 0.5rem;
+  margin-top: 1rem;
 }

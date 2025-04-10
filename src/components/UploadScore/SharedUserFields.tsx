@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from '../../styles/UploadScore.module.css';
-import { MarkerOption } from './types'
+import { MarkerOption } from './types';
 
 type Props<T extends Record<string, any>> = {
   data: T;
@@ -20,6 +20,7 @@ function SharedUserFields<T extends Record<string, any>>({
   fieldLabels,
   inputStyle,
   markerOptions = [],
+  selectedMarker,
   setSelectedMarker,
 }: Props<T>) {
   return (
@@ -27,23 +28,17 @@ function SharedUserFields<T extends Record<string, any>>({
       {fields.map((field) => {
         const label = fieldLabels[field as string] || String(field);
 
-        // Show dropdown for markerName if options are provided
         if (field === 'markerName' && markerOptions.length > 0) {
           return (
             <label key={String(field)} htmlFor={String(field)} className={styles.label}>
               {label}:
               <select
                 id={String(field)}
-                value={data[field] ?? ''}
+                value={selectedMarker?.display || ''}
                 onChange={(e) => {
                   const selected = markerOptions.find(opt => opt.display === e.target.value);
-                  if (selected) {
-                    update(field, selected.display);
-                    setSelectedMarker?.(selected);
-                  } else {
-                    update(field, '');
-                    setSelectedMarker?.(null);
-                  }
+                  update(field, selected?.display || '');
+                  setSelectedMarker?.(selected || null);
                 }}
                 style={{
                   ...inputStyle(String(field)),
@@ -54,7 +49,7 @@ function SharedUserFields<T extends Record<string, any>>({
                 }}
               >
                 <option value="">Velg markør</option>
-                {[...markerOptions]
+                {markerOptions
                   .sort((a, b) => a.name.localeCompare(b.name))
                   .map((marker) => (
                     <option key={marker.guid} value={marker.display}>
@@ -66,7 +61,6 @@ function SharedUserFields<T extends Record<string, any>>({
           );
         }
 
-        // Default input field
         return (
           <label key={String(field)} htmlFor={String(field)} className={styles.label}>
             {label}:

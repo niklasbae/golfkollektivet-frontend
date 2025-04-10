@@ -190,9 +190,9 @@ export const useUploadScoreLogic = () => {
       if (markerData.length === 1) {
         const marker = markerData[0];
         setSelectedMarker(marker);
-  
+      
         if (isForeignClub) {
-          setForeignFormData(prev => ({ ...prev, markerName: marker.display }));
+          updateForeignField('markerName', marker.display);
         } else {
           updateDomesticField('markerName', marker.display);
         }
@@ -200,7 +200,7 @@ export const useUploadScoreLogic = () => {
     }
 
     setLoading(true);
-    setStatus('📡 Sender bildet til AI...');
+    setStatus('Sender bildet til AI...');
 
     const formDataPayload = new FormData();
     formDataPayload.append('image', image);
@@ -257,7 +257,6 @@ export const useUploadScoreLogic = () => {
         'manualTeeName',
         'scoreDate',
         'scoreTime',
-        'markerName',
       ];
 
       const missing = requiredFields.filter((key) => !updatedFormData[key]);
@@ -278,7 +277,7 @@ export const useUploadScoreLogic = () => {
         holeScores: data.holes || Array(18).fill(0)
       });
 
-      const requiredFields: (keyof ScoreFormData)[] = ['username', 'password', 'clubName', 'courseName', 'teeName', 'markerName'];
+      const requiredFields: (keyof ScoreFormData)[] = ['username', 'password', 'clubName', 'courseName', 'teeName'];
       const missing = requiredFields.filter((key) => !formData[key]);
       setMissingFields(missing);
 
@@ -289,15 +288,19 @@ export const useUploadScoreLogic = () => {
       }
     }
 
-    // --- Crop & preview logic ---
     const cropY = data.cropY ?? 300;
+    const cropBottom = 200; // number of pixels to crop from the bottom
+    
     const imgForSize = new Image();
     imgForSize.src = URL.createObjectURL(image);
-
+    
     imgForSize.onload = async () => {
       const fullWidth = imgForSize.width;
       const fullHeight = imgForSize.height;
-      const croppedUrl = await cropImage(image, [0, cropY, fullWidth, fullHeight - cropY]);
+    
+      const newHeight = fullHeight - cropY - cropBottom;
+    
+      const croppedUrl = await cropImage(image, [0, cropY, fullWidth, newHeight]);
       setProcessedImageUrl(croppedUrl);
     };
 
@@ -330,9 +333,120 @@ export const useUploadScoreLogic = () => {
   const foreignScoreSums = calculateForeignScoreSums(foreignFormData.holes);
 
   const submitToGolfbox = async () => {
-    console.log('Submitting to GolfBox...');
-    setSubmitted(true);
-    setStatus('✅ Score sendt!');
+    if (isForeignClub) {
+      const requiredFields: (keyof ForeignScoreFormData)[] = [
+        'username',
+        'password',
+        'manualCourseName',
+        'manualTeeName',
+        'scoreDate',
+        'scoreTime',
+      ];
+  
+      const missing = requiredFields.filter((key) => !foreignFormData[key]);
+      setForeignMissingFields(missing);
+  
+      for (const field of requiredFields) {
+        if (!foreignFormData[field]) {
+          setStatus(`❌ Mangler verdi for: ${fieldLabels[field] || field}`);
+          return;
+        }
+      }
+  
+      const hasValidHoles = foreignFormData.holes.some(h => h.strokes > 0);
+      if (!hasValidHoles) {
+        setStatus('❌ Hullscorer mangler.');
+        return;
+      }
+  
+      const {
+        markerName: _ignoreMarkerName,
+        ...rest
+      } = foreignFormData;
+  
+      // 🛠️ Filter out back 9 if strokes are all 0
+      const trimmedHoles = rest.holes.length === 18 &&
+      rest.holes.slice(9).every(h => h.strokes === 0)
+      ? rest.holes.slice(0, 9)
+      : rest.holes;
+
+      const payload = {
+        ...rest,
+        holes: trimmedHoles,
+        country,
+        markerGuid: selectedMarker?.guid || '',
+      };
+  
+      setLoading(true);
+      try {
+        const res = await fetch('https://golfkollektivet-backend.onrender.com/api/Golfbox/submit-foreign-score', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+  
+        if (res.ok) {
+          setSubmitted(true);
+          setStatus('✅ Internasjonal score sendt til GolfBox!');
+        } else {
+          setStatus('❌ Klarte ikke å sende score.');
+        }
+      } catch (err) {
+        setStatus('❌ Feil ved sending til GolfBox.');
+      } finally {
+        setLoading(false);
+      }
+  
+      return;
+    }
+  
+    if (!formData) return;
+  
+    const requiredFields: (keyof ScoreFormData)[] = [
+      'username',
+      'password',
+      'clubName',
+      'courseName',
+      'teeName',
+      'scoreDate',
+      'scoreTime',
+    ];
+  
+    for (const field of requiredFields) {
+      if (!formData[field]) {
+        setStatus(`❌ Mangler verdi for: ${fieldLabels[field] || field}`);
+        return;
+      }
+    }
+  
+    if (!Array.isArray(formData.holeScores) || formData.holeScores.length < 9) {
+      setStatus('❌ Hullscorer må ha minst 9 verdier.');
+      return;
+    }
+  
+    setLoading(true);
+    try {
+      const { markerName, ...rest } = formData;
+      const res = await fetch('https://golfkollektivet-backend.onrender.com/api/golfbox/submit-score', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...rest,
+          markerGuid: selectedMarker?.guid || '',
+        }),
+      });
+  
+      if (res.ok) {
+        setSubmitted(true);
+        setStatus('✅ Score sendt til GolfBox!');
+      } else {
+        setStatus('❌ Klarte ikke å sende score.');
+      }
+    } catch (err) {
+      setStatus('❌ Feil ved sending til GolfBox.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Fetch clubs after UI has settled (deferred)
@@ -356,6 +470,7 @@ export const useUploadScoreLogic = () => {
       setTimeout(fetchClubs, 300);
     }
   }, []);
+  
 
   useEffect(() => {
     const fetchCoursesAndTees = async () => {

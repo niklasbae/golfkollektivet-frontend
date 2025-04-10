@@ -6,9 +6,10 @@ import styles from '../../styles/UploadScore.module.css';
 type Props = {
   processedImageUrl: string | null;
   isMobile: boolean;
+  showDouble?: boolean;
 };
 
-const ScoreImagePreview: React.FC<Props> = ({ processedImageUrl, isMobile }) => {
+const ScoreImagePreview: React.FC<Props> = ({ processedImageUrl, isMobile, showDouble = false }) => {
   if (!processedImageUrl) return null;
 
   const image = (
@@ -20,10 +21,13 @@ const ScoreImagePreview: React.FC<Props> = ({ processedImageUrl, isMobile }) => 
   );
 
   return isMobile ? (
-    <div className={styles.scorecardMobileImage}>{image}</div>
+    <div>
+      <div className={styles.scorecardMobileImage}>{image}</div>
+      {showDouble && <div className={styles.scorecardMobileImageSecondImage}>{image}</div>}
+      </div>
+    
   ) : (
     <div className={styles.scorecardDesktopImage}>
-      <h4 className={styles.previewTitle}>📷 Originalt bilde</h4>
       {image}
     </div>
   );

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ForeignCourseFields } from './ForeignCourseFields';
 import { DomesticCourseFields } from './DomesticCourseFields';
-import HoleDetailsGrid from './HoleDetailsGrid';
+import ForeignHoleGrid from './ForeignHoleGrid';
 import ScoreImagePreview from './ScoreImagePreview';
 import SharedUserFields from './SharedUserFields';
 import ScoreTotals from './ScoreTotals';
@@ -119,27 +119,83 @@ const UploadScoreForm: React.FC<UploadScoreFormProps> = ({
               />
             )}
           </div>
-
+          
           {isForeignClub ? (
-            <div className={styles.holeDetailsWrapper}>
-              <HoleDetailsGrid
-                holes={foreignFormData.holes}
-                updateHoleData={(index, field, value) => {
-                  const updated = [...foreignFormData.holes];
-                  updated[index][field] = value;
-                  updateForeignField('holes', updated);
-                }}
-              />
-              {processedImageUrl && isMobile && (
-                <ScoreImagePreview processedImageUrl={processedImageUrl} isMobile={isMobile} />
-              )}
-            </div>
+            isMobile ? (
+              // 🌍 Foreign flow - mobile
+              
+              <div className={styles.foreignMobileWrapper}>
+                <div className={styles.foreignMobileTables}>
+                  <ForeignHoleGrid
+                    holes={foreignFormData.holes}
+                    updateHoleData={(index, field, value) => {
+                      const updated = [...foreignFormData.holes];
+                      updated[index][field] = value;
+                      updateForeignField('holes', updated);
+                    }}
+                  />
+                </div>
+                {processedImageUrl && (
+                  <ScoreImagePreview
+                    processedImageUrl={processedImageUrl}
+                    isMobile={true}
+                    showDouble={
+                      isForeignClub &&
+                      isMobile &&
+                      foreignFormData.holes.length === 18 &&
+                      foreignFormData.holes.slice(9).some(h => h.strokes > 0)
+                    }
+                  />
+                )}
+              </div>
+            ) : (
+              // 🌍 Foreign flow - desktop
+              <div className={styles.holeDetailsWrapper}>
+                <ForeignHoleGrid
+                  holes={foreignFormData.holes}
+                  updateHoleData={(index, field, value) => {
+                    const updated = [...foreignFormData.holes];
+                    updated[index][field] = value;
+                    updateForeignField('holes', updated);
+                  }}
+                />
+                {processedImageUrl && (
+                  <div className={styles.scorecardDesktopImage}>
+                    <ScoreImagePreview processedImageUrl={processedImageUrl} isMobile={false} />
+                  </div>
+                )}
+              </div>
+            )
           ) : (
-            <DomesticHoleGrid
-              scores={safeFormData.holeScores}
-              updateScore={updateHoleScore}
-            />
+            isMobile ? (
+              // 🇳🇴 Domestic flow - mobile
+              <div className={styles.domesticVerticalWrapper}>
+                <div className={styles.domesticMobileTables}>
+                  <DomesticHoleGrid
+                    scores={safeFormData.holeScores}
+                    updateScore={updateHoleScore}
+                  />
+                </div>
+                {processedImageUrl && (
+                  <div className={styles.mobileScoreImage}>
+                    <ScoreImagePreview processedImageUrl={processedImageUrl} isMobile={true} />
+                  </div>
+                )}
+              </div>
+            ) : (
+              // 🇳🇴 Domestic flow - desktop
+              <>
+                <DomesticHoleGrid
+                  scores={safeFormData.holeScores}
+                  updateScore={updateHoleScore}
+                />
+                {processedImageUrl && (
+                  <ScoreImagePreview processedImageUrl={processedImageUrl} isMobile={false} />
+                )}
+              </>
+            )
           )}
+            
 
           <ScoreTotals
             isForeignClub={isForeignClub}
@@ -148,9 +204,6 @@ const UploadScoreForm: React.FC<UploadScoreFormProps> = ({
             submitToGolfbox={submitToGolfbox}
           />
 
-          {processedImageUrl && !isMobile && (
-            <ScoreImagePreview processedImageUrl={processedImageUrl} isMobile={isMobile} />
-          )}
 
           {submitted && (
             <div className={styles.successBox}>
